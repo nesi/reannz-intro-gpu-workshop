@@ -88,15 +88,34 @@ using the GPU.
 The driver reporting a GPU does not mean your program found it. These are two
 separate things and they fail separately:
 
-| Slurm gave you a GPU? | Your software found it? | Symptom |
-|---|---|---|
-| No | — | `CUDA_VISIBLE_DEVICES` empty, `nvidia-smi` finds nothing |
-| Yes | No | Everything looks fine. Job runs slowly on the CPU |
-| Yes | Yes | What you wanted |
+| Slurm gave you a GPU? | Your software found it? | Symptom | Fix |
+|---|---|---|---|
+| No | — | `CUDA_VISIBLE_DEVICES` empty, `nvidia-smi` finds nothing | One line of your Slurm script |
+| Yes | No | Everything looks fine. Job runs slowly on the CPU | Your software install |
+| Yes | Yes | What you wanted | — |
 
-The middle row is the dangerous one. Causes include a CPU-only build of the
-software, a module not loaded, a GPU feature not switched on in a config file,
-or a library version mismatch.
+The middle row is the dangerous one, because nothing announces it. Causes
+include a CPU-only build of the software, a module not loaded, a GPU feature
+left switched off in a config file, or a library version mismatch.
+
+!!! note "Telling a CPU-only build apart from a missing GPU"
+
+    These two produce the same symptom and have completely different fixes, so
+    it is worth knowing how to separate them. For PyTorch, two lines do it:
+
+    ```bash
+    python -c "import torch; print(torch.__version__, torch.version.cuda)"
+    ```
+
+    | Output | Means |
+    |---|---|
+    | `2.14.0+cu124  12.4` | A **CUDA build**. It can use a GPU |
+    | `2.14.0+cpu  None` | A **CPU-only build**. It never will, whatever Slurm gives it |
+
+    So a job where `CUDA_VISIBLE_DEVICES` is `0` and the version says `+cpu`
+    has a software problem — no amount of fixing the Slurm script will help.
+    A job where the version says `+cu124` and `is_available()` is still
+    `False` has either no GPU allocated, or a module mismatch.
 
 So check both. There is a script for it:
 
@@ -126,7 +145,8 @@ sbatch check-gpu.sl
 
 3. What your software reports (PyTorch)
 ---------------------------------------
-  torch version:         2.14.0+cpu
+  torch version:         2.14.0+cu124
+  built against CUDA:    12.4
   torch.cuda.is_available(): True
   device count:          1
   device name:           NVIDIA L4
@@ -171,14 +191,23 @@ Section 3 is the one that matters. The equivalent for other software:
 
         3. What your software reports (PyTorch)
         ---------------------------------------
+          torch version:         2.14.0+cu124
+          built against CUDA:    12.4
           torch.cuda.is_available(): False
+
+          PyTorch found no GPU because this job was not given one.
+          This is a Slurm problem, not a software problem. Add:
+              #SBATCH --gpus-per-node l4:1
         ```
 
-        All three agree, which tells you the problem is the Slurm request.
+        Note what section 3 does **not** say. PyTorch is still a CUDA build —
+        `+cu124`, CUDA 12.4 — it simply has no device to use. Nothing is wrong
+        with the software.
 
-        Had section 1 shown a GPU while section 3 said `False`, the problem
-        would be the software instead — and the fix would be completely
-        different. That is why the script prints all three.
+        Had the version said `+cpu` and `built against CUDA: None` while
+        section 1 showed a GPU, the diagnosis would be the opposite: a
+        CPU-only build, and a fix that has nothing to do with Slurm. That is
+        why the script prints all three sections rather than one.
 
     4. **Undo your edit** before moving on.
 

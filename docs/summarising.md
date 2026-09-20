@@ -50,6 +50,7 @@ srun my_program --use-gpu
 |---|---|---|
 | Is there a GPU I can use? | `nvidia-smi` | |
 | Did my software find it? | Ask the software | `nvidia-smi` |
+| Is my software even GPU-capable? | `torch.__version__`, `torch.version.cuda` | |
 | Is it busy *right now*? | `nvtop`, via `svisit` | `nvidia-smi` — one sample proves nothing |
 | Was it busy *overall*? | `seff` | `nvidia-smi` |
 | Did this job have a GPU at all? | `seff` — no GPU lines means no GPU | |

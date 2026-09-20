@@ -90,8 +90,13 @@ echo "CUDA_VISIBLE_DEVICES=${CUDA_VISIBLE_DEVICES}"
 ### Asking your software
 
 ```bash
-# PyTorch
+# PyTorch: is a GPU usable right now?
 python -c "import torch; print(torch.cuda.is_available())"
+
+# PyTorch: is this even a GPU-capable build?
+python -c "import torch; print(torch.__version__, torch.version.cuda)"
+#   2.14.0+cu124  12.4   -> a CUDA build
+#   2.14.0+cpu    None   -> a CPU-only build; it will never use a GPU
 
 # TensorFlow
 python -c "import tensorflow as tf; print(tf.config.list_physical_devices('GPU'))"

@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 250" width="680" height="250" role="img" aria-label="Introduction to Using GPUs">
+  <title>Introduction to Using GPUs</title>
+  <defs>
+    <!-- The die: a grid of small squares standing in for streaming
+         multiprocessors. It is the one picture that says "many small
+         identical units working at once" without any words. -->
+    <pattern id="smGrid" width="17" height="17" patternUnits="userSpaceOnUse">
+      <rect x="1.5" y="1.5" width="14" height="14" rx="2" fill="#23abe3" opacity="0.40"/>
+    </pattern>
+  </defs>
+
+  <g transform="translate(40 34)">
+    <!-- package substrate -->
+    <rect x="0" y="0" width="188" height="188" rx="10" fill="#001c36"/>
+    <!-- die -->
+    <rect x="18" y="18" width="152" height="152" rx="6" fill="#0b2139"/>
+    <rect x="21" y="21" width="146" height="146" fill="url(#smGrid)"/>
+    <!-- a handful of units lit up, because a real GPU is rarely all busy -->
+    <rect x="38.5" y="38.5" width="14" height="14" rx="2" fill="#f8961d"/>
+    <rect x="89.5" y="55.5" width="14" height="14" rx="2" fill="#f8961d"/>
+    <rect x="55.5" y="106.5" width="14" height="14" rx="2" fill="#f8961d"/>
+    <rect x="123.5" y="123.5" width="14" height="14" rx="2" fill="#f8961d"/>
+    <rect x="140.5" y="72.5" width="14" height="14" rx="2" fill="#23abe3"/>
+    <!-- contact fingers along the bottom edge -->
+    <g fill="#f8961d" opacity="0.85">
+      <rect x="24" y="192" width="10" height="8" rx="1.5"/>
+      <rect x="42" y="192" width="10" height="8" rx="1.5"/>
+      <rect x="60" y="192" width="10" height="8" rx="1.5"/>
+      <rect x="78" y="192" width="10" height="8" rx="1.5"/>
+      <rect x="96" y="192" width="10" height="8" rx="1.5"/>
+      <rect x="114" y="192" width="10" height="8" rx="1.5"/>
+      <rect x="132" y="192" width="10" height="8" rx="1.5"/>
+      <rect x="150" y="192" width="10" height="8" rx="1.5"/>
+    </g>
+  </g>
+
+  <g font-family="Mukta, 'Helvetica Neue', Helvetica, Arial, sans-serif">
+    <text x="268" y="94" font-size="46" font-weight="700" fill="#001c36">Introduction to</text>
+    <text x="268" y="150" font-size="46" font-weight="700" fill="#001c36">Using <tspan fill="#23abe3">GPUs</tspan></text>
+    <rect x="268" y="170" width="78" height="4" rx="2" fill="#f8961d"/>
+    <text x="268" y="204" font-size="19" fill="#0b2139" opacity="0.75">Choosing, requesting and monitoring GPUs on an HPC</text>
+  </g>
+</svg>

@@ -1,0 +1,141 @@
+site_name: Introduction to Using GPUs on High Performance Clusters (HPC)
+site_author: REANNZ
+site_dir: public
+site_url: "https://nesi.github.io/reannz-intro-gpu-workshop/"
+
+#Repository information
+
+repo_name: nesi/reannz-intro-gpu-workshop
+repo_url: https://github.com/nesi/reannz-intro-gpu-workshop
+
+nav:
+  - Home: index.md
+  - 00-what-a-gpu-is.md
+  - "Getting a GPU job running":
+    - 01-requesting-a-gpu.md
+    - 02-did-i-get-a-gpu.md
+  - "Is it doing any work?":
+    - 03-watching-with-nvtop.md
+    - 04-reading-seff.md
+  - "Asking for the right resources":
+    - 05-ram-and-vram.md
+    - 06-how-many-cpus.md
+    - 07-splitting-the-work.md
+  - "Choosing your hardware":
+    - 08-precision.md
+    - 09-choosing-a-gpu.md
+  - summarising.md
+  - Reference:
+    - "R1: Command Reference": R1-command-reference.md
+    - "R2: The GPUs on this Cluster": R2-gpu-reference.md
+  - Setup (for Trainers):
+    - setup-gpu-workshop.md
+
+theme:
+  name: material
+  custom_dir: overrides
+  logo: fig/reannz-logo.svg
+  favicon: fig/reannz-favicon.jpeg
+  static_templates:
+    - 404.html
+  palette:
+
+    # Palette toggle for automatic mode
+    - media: "(prefers-color-scheme)"
+      toggle:
+        icon: material/brightness-auto
+        name: Switch to light mode
+      primary: custom
+
+    # Palette toggle for light mode
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: custom
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+
+    # Palette toggle for dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      toggle:
+        icon: material/brightness-4
+        name: Switch to system preference
+      primary: custom
+  
+  features:
+    - navigation.tracking
+    - navigation.sections
+    - navigation.expand
+    - navigation.top
+    - navigation.footer
+    - content.code.copy
+    - content.code.annotate
+
+  # Necessary for search to work properly
+  include_search_page: false
+  search_index_only: true
+
+  # Default values, taken from mkdocs_theme.yml
+  language: en
+  font:
+    text: Mukta
+    code: Fira Code
+
+markdown_extensions:
+  - abbr
+  - admonition
+  - attr_list
+  - def_list
+  - footnotes
+  - meta
+  - md_in_html
+  - toc:
+      permalink: true
+  - pymdownx.arithmatex:
+      generic: true
+  - pymdownx.betterem:
+      smart_enable: all
+  - pymdownx.caret
+  - pymdownx.details
+  - pymdownx.emoji:
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.keys
+  - pymdownx.magiclink:
+      repo_url_shorthand: true
+      user: squidfunk
+      repo: mkdocs-material
+  - pymdownx.mark
+  - pymdownx.smartsymbols
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.tilde
+  - pymdownx.snippets
+
+plugins: 
+  - glightbox:
+      effect: zoom
+      zoomable: true
+  - search:
+      lang: en
+
+extra_javascript:
+  - javascripts/mathjax.js
+  - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
+
+copyright : Introduction to Using GPUs workshop material is licensed under a <a rel="noopener" target="_blank" href="https://www.gnu.org/licenses/gpl-3.0.en.html">GNU General Public License v3.0</a>
+
+
+extra_css:
+  - stylesheets/extra.css

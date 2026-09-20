@@ -1,0 +1,51 @@
+# macOS metadata. Finder writes these into any directory it is asked to
+# display, including ones on network shares and USB sticks, so they turn up
+# in commits from people who never opened the folder deliberately.
+.DS_Store
+.DS_Store?
+._*
+.AppleDouble
+.LSOverride
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.fseventsd
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+.apdisk
+Icon?
+
+# Windows and Linux desktop equivalents, for the same reason.
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+.directory
+.Trash-*
+
+# MkDocs build output. site/ is the default; public/ is what this project's
+# mkdocs.yml sets.
+public/
+site/
+.cache/
+
+# Python, for anyone running the example scripts in place.
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.env
+
+# Output left behind by running the exercises.
+*.out
+.jobids
+
+# Editors
+.idea/
+.vscode/
+*.swp
+*~

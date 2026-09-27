@@ -10,21 +10,20 @@ repo_url: https://github.com/nesi/reannz-intro-gpu-workshop
 
 nav:
   - Home: index.md
-  - 00-what-a-gpu-is.md
-  - "Getting a GPU job running":
-    - 01-requesting-a-gpu.md
-    - 02-did-i-get-a-gpu.md
-  - "Is it doing any work?":
-    - 03-watching-with-nvtop.md
-    - 04-reading-seff.md
-  - "Asking for the right resources":
-    - 05-ram-and-vram.md
-    - 06-how-many-cpus.md
-    - 07-splitting-the-work.md
-  - "Choosing your hardware":
-    - 08-precision.md
-    - 09-choosing-a-gpu.md
-  - summarising.md
+  - "Writing your submit script":
+    - 01-the-submit-script.md
+    - 02-which-gpu.md
+    - 03-how-many-cpus.md
+    - 04-how-much-memory.md
+  - "Measuring your GPU jobs":
+    - 05-measuring-your-jobs.md
+    - 06-tools-for-measuring.md
+  - "Putting it all together":
+    - 07-putting-it-together.md
+    - summarising.md
+  - Supplementary:
+    - "S1: What a GPU Is": S1-what-a-gpu-is.md
+    - "S2: Splitting CPU and GPU Work": S2-splitting-the-work.md
   - Reference:
     - "R1: Command Reference": R1-command-reference.md
     - "R2: The GPUs on this Cluster": R2-gpu-reference.md

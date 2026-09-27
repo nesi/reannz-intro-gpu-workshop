@@ -6,12 +6,12 @@ Everything from the workshop, on one page.
 
 Everything else exists to answer these.
 
-| # | Question | Measure it with |
-|---|---|---|
-| 1 | Does my software need double precision (fp64)? | Its documentation |
-| 2 | How much VRAM does my work need? | Arithmetic, then `seff` |
-| 3 | How many CPU cores keep the GPU fed? | Submit at 1, 2, 4, 8 and compare |
-| 4 | What fraction of my runtime is on the GPU? | Timers around your stages |
+| # | Question | Measure it with | Chapter |
+|---|---|---|---|
+| 1 | Does my software need double precision (fp64)? | Its documentation | 5 |
+| 2 | How much VRAM does my work need? | Arithmetic, then `seff` | 2 |
+| 3 | How many CPU cores keep the GPU fed? | Submit at 1, 2, 4 and compare | 2 |
+| 4 | What fraction of my runtime is on the GPU? | `seff`, or timers around your stages | 4, S2 |
 
 ## A GPU job script, annotated
 

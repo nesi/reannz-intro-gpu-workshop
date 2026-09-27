@@ -3,75 +3,74 @@
 ![image](./fig/Title_GPU.svg#only-light){: width="560px" .center}
 ![image](./fig/Title_GPU_dark.svg#only-dark){: width="560px" .center}
 
-This workshop is about **using** GPUs, not programming them. It is for
-researchers who have software that can run on a GPU — or think it might — and
-need to work out which GPU to ask for, how to ask for it, and whether they
-actually got any benefit from it.
+The goal of this workshop is to show you how to run your software on GPUs as
+efficiently as possible, on a high performance computing system like Mahuika.
 
-You will not write a CUDA kernel. You will not need to know what a kernel is.
-What you will do is run jobs, watch them, read what the cluster tells you about
-them afterwards, and use that to make better requests next time.
+**What does efficiency mean in this context?** It specifically means how we can
+keep the GPU running at its maximum for your computational job or simulation.
 
-!!! clipboard-question "The question this workshop answers"
+Concretely, an efficient GPU job is one where:
 
-    **"Which GPU should I use for my work?"**
+- The GPU is **busy** for most of the time you hold it.
+- You asked for a card your work **fits in**, and not a larger one.
+- You asked for roughly the **CPU cores and memory you actually use**.
 
-    It is the first thing people ask and the last thing that can honestly be
-    answered, because the answer depends on four things you have to measure
-    first: how much GPU memory your work needs, how many CPU cores it takes to
-    keep the GPU busy, how much of your runtime is on the GPU at all, and
-    whether your software needs double precision.
+**Why is this important?** GPU time is in limited supply, due to its demand for
+research applications like AI and simulations. For this reason GPU time is
+expensive and precious, and minimising the amount of time you need a GPU to
+complete your computational job is very important.
 
-    Chapters 1 to 8 are how you find those four numbers. Chapter 9 puts them
-    together.
+**Mahuika is also a shared resource.** We all want to use the GPUs for our
+research. Having efficient jobs makes you a good user of the platform, and
+leaves time for other researchers to do their research as well.
 
-!!! clipboard-list "Learning Objectives"
+## Who should be attending this workshop
 
-    By the end of this workshop, you will be able to:
+You should be attending this workshop if you are using or are interested in using
+GPUs on Mahuika or another High Performance Computing (HPC) system
 
-    - Request a GPU in a Slurm script, and recognise when you have not.
-    - Use `nvidia-smi` for the one thing it is good for, and stop using it for
-      the things it is not.
-    - Watch a running job with `nvtop` and read what the traces are telling you.
-    - Read `seff` after a job and say whether the GPU was worth asking for.
-    - Tell RAM and VRAM apart, and work out how much of each your work needs.
-    - Choose how many CPU cores to request for a GPU job, by measuring rather
-      than guessing.
-    - Identify which parts of your workflow a GPU can help with, and which it
-      cannot.
-    - Say whether your software needs double precision, and what that rules in
-      and out.
-    - Choose the right GPU for a piece of work and justify the choice.
+Specifically, this workshop will cover what you should consider and what tests 
+you should run in order to optimise the efficiency of your GPU jobs.
 
-| **Lesson** | **Overview** |
-|:-----------|:-------------|
-| [What a GPU is, and when it helps](00-what-a-gpu-is.md) | Why some work goes faster on a GPU and most does not |
-| **Getting a GPU job running** | |
-| [1. Requesting a GPU](01-requesting-a-gpu.md) | The Slurm flags, and what each one actually does |
-| [2. Did I get a GPU?](02-did-i-get-a-gpu.md) | Checking, and why `nvidia-smi` alone is not enough |
-| **Is it doing any work?** | |
-| [3. Watching a job with nvtop](03-watching-with-nvtop.md) | See utilisation and memory move while the job runs |
-| [4. Reading seff](04-reading-seff.md) | The report card, and the two lines that matter most |
-| **Asking for the right resources** | |
-| [5. RAM and VRAM](05-ram-and-vram.md) | Two separate pools, and how much of each to ask for |
-| [6. How many CPUs?](06-how-many-cpus.md) | Measuring the point where more cores stop helping |
-| [7. Splitting CPU and GPU work](07-splitting-the-work.md) | Which parts of your work a GPU can help with |
-| **Choosing your hardware** | |
-| [8. Precision](08-precision.md) | Single and double precision, and why it decides the card |
-| [9. Choosing a GPU](09-choosing-a-gpu.md) | Putting the four measurements together |
-| | |
+## Flow of this workshop
+
+The workshop is in three stages.
+
+**Stage 1: Writing your submit script** — asking for the right things:
+
+| **Chapter** | **Overview** |
+|:------------|:-------------|
+| [1. The submit script](01-the-submit-script.md) | The lines that matter, and which are real decisions |
+| [2. Which GPU](02-which-gpu.md) | Precision, GPU memory, and the smallest card that fits |
+| [3. How many CPUs](03-how-many-cpus.md) | Feeding the GPU, and where to start |
+| [4. How much memory](04-how-much-memory.md) | What a GPU job uses CPU memory for, and how to size it |
+
+**Stage 2: Measuring your GPU jobs** — finding out what your request actually did:
+
+| **Chapter** | **Overview** |
+|:------------|:-------------|
+| [5. Measuring your GPU jobs](05-measuring-your-jobs.md) | Which questions to ask, and which tool answers each |
+| [6. The tools for measuring](06-tools-for-measuring.md) | A test submit script, `seff`, `profile_plot` and `nvtop` |
+
+**Stage 3: Putting it all together** — turning the measurements into a request
+you keep:
+
+| **Chapter** | **Overview** |
+|:------------|:-------------|
+| [7. Putting it all together](07-putting-it-together.md) | The whole loop on one job: watch it, size the card, tune cores and memory |
 | [Summary and checklist](summarising.md) | Everything, on one page, to take away |
-| [R1: Command reference](R1-command-reference.md) | Every command used, with its flags |
-| [R2: The GPUs on this cluster](R2-gpu-reference.md) | The fleet, side by side |
 
-!!! clipboard-list "Getting Started"
+**Supplementary:** [what a GPU is](S1-what-a-gpu-is.md) for anyone meeting them
+for the first time, and [splitting CPU and GPU
+work](S2-splitting-the-work.md) for when your utilisation is lower than you
+would like. **Reference:** [commands](R1-command-reference.md) and [the GPUs on
+this cluster](R2-gpu-reference.md).
 
-    This workshop assumes no experience with GPUs. You should be comfortable
-    working in a Unix shell — `cd`, `ls`, editing a file — and have used
-    `sbatch` to submit a job before, or be willing to learn it here.
+!!! clipboard-list "Getting started"
 
-    You do **not** need to know any CUDA, C++ or Python beyond reading a short
-    script. Bring a laptop and plan to take part actively.
+    You should be comfortable in a Unix shell — `cd`, `ls`, editing a file —
+    and have used `sbatch` before, or be willing to pick it up here. No GPU
+    experience is assumed.
 
     Everything is done from a **terminal**. In JupyterLab, open one with
     **File → New → Terminal**, then:
@@ -83,28 +82,27 @@ them afterwards, and use that to make better requests next time.
 
 !!! warning "About the training environment"
 
-    The machines used for this workshop **do not have GPUs**. The session
-    emulates one, so that the tools behave exactly as they do on the cluster:
-    `nvidia-smi`, `nvtop`, `seff` and `sbatch` all show real utilisation, real
-    memory and real job accounting.
+    The machines used for this workshop **have no GPUs**. The session emulates
+    one, so the tools behave exactly as they do on the cluster: `nvidia-smi`,
+    `nvtop`, `seff` and `sbatch` all show real utilisation, real memory and
+    real job accounting.
 
     The arithmetic runs on the CPU. **No timing you measure here says anything
     about GPU performance**, and nothing in this workshop asks you to time
-    anything. Everything you learn about *reading* these tools transfers to
-    the cluster unchanged. Nothing you learn about speed does.
+    anything. Everything you learn about *reading* these tools transfers
+    unchanged. Nothing you learn about speed does.
 
     The emulated card reports **1 GB of GPU memory** rather than the 24 GB a
-    real one has, so that running out of memory takes a few seconds rather
-    than filling a real card.
+    real one has, so running out of memory takes seconds rather than filling a
+    real card.
 
 - - -
 
 !!! copyright "Attribution Notice"
 
-    * This workshop material draws on the [NeSI support documentation on
-      Using GPUs](https://docs.nesi.org.nz/Batch_Computing/Using_GPUs/) and
-      the [cluster hardware
-      reference](https://docs.nesi.org.nz/Batch_Computing/Hardware/).
+    * Draws on the NeSI support documentation for [Using
+      GPUs](https://docs.nesi.org.nz/Batch_Computing/Using_GPUs/) and
+      [Hardware](https://docs.nesi.org.nz/Batch_Computing/Hardware/).
     * `seff` and `svisit` are documented as they behave in
       [nesi/opt-nesi-bin](https://github.com/nesi/opt-nesi-bin).
     * The training environment is

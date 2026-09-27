@@ -1,4 +1,13 @@
-# 7. Splitting CPU and GPU work
+# S2: Splitting CPU and GPU work
+
+!!! circle-info "Supplementary"
+
+    This sits outside the main sequence. It is the natural next step once you
+    can read `seff` and find your GPU utilisation lower than you would like:
+    it is about working out which parts of your work a GPU can help with at
+    all, and what that puts a ceiling on.
+
+    The scripts are in `~/gpu-training/supplementary/`.
 
 !!! clipboard-list "Lesson Objectives"
 
@@ -49,7 +58,7 @@ GPU. Everything else does not.
 ## Measure your own stages
 
 ```bash
-cd ~/gpu-training/07_splitting_the_work
+cd ~/gpu-training/supplementary
 python3 profile_phases.py
 ```
 
@@ -135,7 +144,7 @@ about theirs. For non-Python software, the same thing:
 **If the GPU stage dominates (say over 70%)**
 
 The GPU is the bottleneck. This is the one case where a faster or larger GPU is
-the right answer. Go to chapters 8 and 9 and choose one properly.
+the right answer. Go to chapters 5 and 6 and choose one properly.
 
 **If reading and writing dominate**
 
@@ -153,7 +162,7 @@ You are limited by storage. Things that help, roughly in order of payoff:
 
 **If CPU preparation dominates**
 
-- Parallelise it across more cores — chapter 6.
+- Parallelise it across more cores — chapter 2.
 - Do the preparation once and cache the result, if it is the same every run.
   People re-decode the same dataset every epoch for months.
 - Consider moving that stage onto the GPU too, if it is arithmetic rather than

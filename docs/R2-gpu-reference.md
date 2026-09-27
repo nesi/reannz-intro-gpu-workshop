@@ -97,4 +97,4 @@ choose.
     For machine learning it is outstanding. For a quantum chemistry or CFD code
     it is one of the worst choices available. The same card, for the same
     money, depending entirely on what you run on it. That is the clearest
-    illustration there is of why [chapter 8](08-precision.md) matters.
+    illustration there is of why [chapter 2](02-which-gpu.md) matters.

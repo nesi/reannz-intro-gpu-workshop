@@ -1,4 +1,14 @@
-# What a GPU is, and when it helps
+# S1: What a GPU is, and when it helps
+
+!!! circle-info "Optional background"
+
+    Supplementary material. If you already know roughly what a GPU is and that
+    your software has to be written to use one, skip it — the workshop proper
+    starts at [chapter 2](02-which-gpu.md).
+
+    It is here for people meeting GPUs for the first time, and for the one
+    point on it that catches experienced people out: **requesting a GPU does
+    not make an ordinary program use one.**
 
 !!! clipboard-list "Lesson Objectives"
 

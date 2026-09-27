@@ -1116,3 +1116,19 @@
 .md-typeset .highlight .hll {
   background-color: rgba(255, 229, 100, 0.5);
 }
+
+/* Centre tables on the page.
+   Material wraps every table in .md-typeset__scrollwrap > .md-typeset__table at
+   runtime, and switches the inner div between inline-block and block depending
+   on the breakpoint. Handling both keeps the table centred either way, while
+   leaving cell alignment exactly as the Markdown author wrote it. */
+.md-typeset__scrollwrap {
+  text-align: center;
+}
+
+.md-typeset__table {
+  margin-inline: auto;
+  width: fit-content;
+  max-width: 100%;
+  text-align: initial;
+}

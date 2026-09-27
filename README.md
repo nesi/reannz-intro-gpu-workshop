@@ -6,10 +6,14 @@ researchers how to choose, request and monitor GPUs on an HPC such as
 
 📖 **Read the workshop here: <https://nesi.github.io/reannz-intro-gpu-workshop/>**
 
-The material is a single track of nine chapters built around one question —
+The material is a single track of six chapters built around one question —
 *which GPU should I use for my work?* — which the workshop opens with and can
-only answer at the end, once a learner can measure the four things it depends
-on. The pages live in [`docs/`](docs/).
+only answer at the end, once a learner can measure what it depends on. The
+pages live in [`docs/`](docs/).
+
+It assumes most of the audience has run a Slurm job before, so the opening
+moves quickly. Background for anyone meeting GPUs for the first time is
+supplementary rather than in the main flow.
 
 ## Who this is for
 
@@ -21,24 +25,24 @@ prior GPU experience. Everything is done from a terminal.
 
 | Chapter | Covers |
 |---|---|
-| What a GPU is, and when it helps | Why some work suits a GPU and most does not |
-| **Getting a GPU job running** | |
-| 1. Requesting a GPU | The Slurm flags, and what each one asks for |
-| 2. Did I get a GPU? | Checking, and the limits of `nvidia-smi` |
-| **Is it doing any work?** | |
+| 1. Getting a GPU job running | The Slurm flags, and confirming your software sees the GPU |
+| 2. Asking for the right resources | CPUs, RAM and VRAM: sizing each, and reading an OOM error |
 | 3. Watching a job with nvtop | `svisit`, and reading utilisation over time |
 | 4. Reading seff | The report card, and the two GPU lines |
-| **Asking for the right resources** | |
-| 5. RAM and VRAM | Two separate pools; sizing each; reading an OOM error |
-| 6. How many CPUs? | Measuring the point where more cores stop helping |
-| 7. Splitting CPU and GPU work | Which stages a GPU can help with, and the ceiling |
-| **Choosing your hardware** | |
-| 8. Precision | fp32 vs fp64, and why it decides the card |
-| 9. Choosing a GPU | The four measurements, combined into a request |
+| 5. Precision | fp32 vs fp64, and why it decides the card |
+| 6. Choosing a GPU | The measurements, combined into a request |
 
-Plus a [summary and checklist](docs/summarising.md), a [command
-reference](docs/R1-command-reference.md), a [GPU
-reference](docs/R2-gpu-reference.md) and a [setup page for
+Plus a [summary and checklist](docs/summarising.md).
+
+**Supplementary**, outside the main sequence:
+
+| | |
+|---|---|
+| [S1: What a GPU is](docs/S1-what-a-gpu-is.md) | Optional background for anyone new to GPUs |
+| [S2: Splitting CPU and GPU work](docs/S2-splitting-the-work.md) | Which stages a GPU can help with, and the ceiling |
+
+**Reference:** [commands](docs/R1-command-reference.md), [the GPUs on this
+cluster](docs/R2-gpu-reference.md), and a [setup page for
 trainers](docs/setup-gpu-workshop.md).
 
 ## Repository layout

@@ -26,9 +26,9 @@ out-of-memory errors are real; the arithmetic runs on the CPU.
 
     ```yaml
     gpu:
-      k8s_container: ghcr.io/nesi/training-environment-jupyter-gpu-app:v0.5.1
+      k8s_container: ghcr.io/nesi/training-environment-jupyter-gpu-app:v0.5.3
       repo: https://github.com/nesi/training-environment-jupyter-gpu-app.git
-      version: 'v0.5.1'
+      version: 'v0.5.3'
       enabled: true
       pre_pull: true
     ```

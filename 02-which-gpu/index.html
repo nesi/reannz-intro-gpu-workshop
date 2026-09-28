@@ -1,0 +1,1676 @@
+<!DOCTYPE html><html lang="en" class="no-js"><head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+        <meta name="author" content="REANNZ">
+      
+      
+        <link rel="canonical" href="https://nesi.github.io/reannz-intro-gpu-workshop/02-which-gpu/">
+      
+      
+        <link rel="prev" href="../01-the-submit-script/">
+      
+      
+        <link rel="next" href="../03-how-many-cpus/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../fig/reannz-favicon.jpeg">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>2. Which GPU should I use? - Introduction to Using GPUs on High Performance Clusters (HPC)</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Mukta:300,300i,400,400i,700,700i%7CFira+Code:400,400i,700,700i&amp;display=fallback">
+        <style>:root{--md-text-font:"Mukta";--md-code-font:"Fira Code"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  <link href="../assets/stylesheets/glightbox.min.css" rel="stylesheet"><script src="../assets/javascripts/glightbox.min.js"></script><style id="glightbox-style">
+            html.glightbox-open { overflow: initial; height: 100%; }
+            .gslide-title { margin-top: 0px; user-select: text; }
+            .gslide-desc { color: #666; user-select: text; }
+            .gslide-image img { background: white; }
+            .gscrollbar-fixer { padding-right: 15px; }
+            .gdesc-inner { font-size: 0.75rem; }
+            body[data-md-color-scheme="slate"] .gdesc-inner { background: var(--md-default-bg-color); }
+            body[data-md-color-scheme="slate"] .gslide-title { color: var(--md-default-fg-color); }
+            body[data-md-color-scheme="slate"] .gslide-desc { color: var(--md-default-fg-color); }
+        </style></head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#2-which-gpu-should-i-use" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="Introduction to Using GPUs on High Performance Clusters (HPC)" class="md-header__button md-logo" aria-label="Introduction to Using GPUs on High Performance Clusters (HPC)" data-md-component="logo">
+      
+  <img src="../fig/reannz-logo.svg" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"></path></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Introduction to Using GPUs on High Performance Clusters (HPC)
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              2. Which GPU should I use?
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="indigo" aria-label="Switch to light mode" type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_1" hidden="">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m14.3 16-.7-2h-3.2l-.7 2H7.8L11 7h2l3.2 9zM20 8.69V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12zm-9.15 3.96h2.3L12 9z"></path></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="indigo" aria-label="Switch to dark mode" type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_2" hidden="">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"></path></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="indigo" aria-label="Switch to system preference" type="radio" name="__palette" id="__palette_2">
+    
+      <label class="md-header__button md-icon" title="Switch to system preference" for="__palette_0" hidden="">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"></path></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required="">
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix="">
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/nesi/reannz-intro-gpu-workshop" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"></path></svg>
+  </div>
+  <div class="md-source__repository">
+    nesi/reannz-intro-gpu-workshop
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Introduction to Using GPUs on High Performance Clusters (HPC)" class="md-nav__button md-logo" aria-label="Introduction to Using GPUs on High Performance Clusters (HPC)" data-md-component="logo">
+      
+  <img src="../fig/reannz-logo.svg" alt="logo">
+
+    </a>
+    Introduction to Using GPUs on High Performance Clusters (HPC)
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/nesi/reannz-intro-gpu-workshop" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"></path></svg>
+  </div>
+  <div class="md-source__repository">
+    nesi/reannz-intro-gpu-workshop
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix="">
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked="">
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Writing your submit script
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Writing your submit script
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix="">
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01-the-submit-script/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    1. The submit script
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2. Which GPU should I use?
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2. Which GPU should I use?
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+      
+        <li class="md-nav__item">
+  <a href="#the-gpus-available-on-mahuika" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The GPUs available on Mahuika
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#how-to-choose-which-gpu-to-use" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How to choose which GPU to use
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="How to choose which GPU to use">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#gpu-memory-vram" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GPU Memory (VRAM)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#precision" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Precision
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#summary-choosing-your-card" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Summary: Choosing your card
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03-how-many-cpus/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    3. How many CPUs do I need?
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04-how-much-memory/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    4. How much memory should I request?
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3">
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Measuring your GPU jobs
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Measuring your GPU jobs
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix="">
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05-measuring-your-jobs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    5. Measuring your GPU jobs
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06-tools-for-measuring/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6. The tools for measuring a GPU job
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4">
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Putting it all together
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Putting it all together
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix="">
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../07-putting-it-together/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    7. Putting it all together
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../summarising/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Summary and checklist
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_5">
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Supplementary
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Supplementary
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix="">
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../S1-what-a-gpu-is/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    S1: What a GPU Is
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../S2-splitting-the-work/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    S2: Splitting CPU and GPU Work
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6">
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reference
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Reference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix="">
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../R1-command-reference/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    R1: Command Reference
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../R2-gpu-reference/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    R2: The GPUs on this Cluster
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_7">
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Setup (for Trainers)
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Setup (for Trainers)
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix="">
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../setup-gpu-workshop/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Setup (for trainers)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+      
+        <li class="md-nav__item">
+  <a href="#the-gpus-available-on-mahuika" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The GPUs available on Mahuika
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#how-to-choose-which-gpu-to-use" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How to choose which GPU to use
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="How to choose which GPU to use">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#gpu-memory-vram" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GPU Memory (VRAM)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#precision" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Precision
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#summary-choosing-your-card" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Summary: Choosing your card
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="2-which-gpu-should-i-use">2. Which GPU should I use?<a class="headerlink" href="#2-which-gpu-should-i-use" title="Permanent link">¶</a></h1>
+<div class="admonition clipboard-list">
+<p class="admonition-title">Lesson Objectives</p>
+<ul>
+<li>Know which GPUs Mahuika has, and how to ask for one</li>
+<li>Work out whether your job will fit in a card's memory</li>
+<li>Decide whether your work needs double precision, and what that rules out</li>
+</ul>
+</div>
+<div class="admonition clipboard-question">
+<p class="admonition-title">Questions</p>
+<ul>
+<li>What GPUs can I ask for?</li>
+<li>Which one should I ask for, and why not simply the biggest?</li>
+</ul>
+</div>
+<h2 id="the-gpus-available-on-mahuika">The GPUs available on Mahuika<a class="headerlink" href="#the-gpus-available-on-mahuika" title="Permanent link">¶</a></h2>
+<p>We have a number of GPUs available on Mahuika for scientific research. These
+GPUs, and how you ask for each of them, are below:</p>
+<table>
+<thead>
+<tr>
+<th>GPU</th>
+<th>Per node</th>
+<th>Total on Mahuika</th>
+<th>Request</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>NVIDIA L4</strong></td>
+<td>4</td>
+<td>16</td>
+<td><code>l4:1</code></td>
+</tr>
+<tr>
+<td><strong>NVIDIA A100 40 GB</strong></td>
+<td>3</td>
+<td>9</td>
+<td><code>a100_40:1</code></td>
+</tr>
+<tr>
+<td><strong>NVIDIA A100 80 GB</strong></td>
+<td>4</td>
+<td>16</td>
+<td><code>a100:1</code></td>
+</tr>
+<tr>
+<td><strong>NVIDIA H100</strong></td>
+<td>2</td>
+<td>8</td>
+<td><code>h100:1</code></td>
+</tr>
+<tr>
+<td><strong>NVIDIA RTX PRO 6000</strong></td>
+<td>2</td>
+<td>8</td>
+<td><code>pro_6000:1</code></td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="how-to-choose-which-gpu-to-use">How to choose which GPU to use<a class="headerlink" href="#how-to-choose-which-gpu-to-use" title="Permanent link">¶</a></h2>
+<p>There are two questions you need to ask yourself when determining what GPU you should use for your job: </p>
+<ol>
+<li><strong>Will my job fit in the card's memory?</strong> If it does not, the job cannot run
+   there at all.</li>
+<li><strong>Does my software use single or double precision?</strong> Get this wrong and the
+   job runs perfectly correctly, just tens of times slower than it should.</li>
+</ol>
+<h3 id="gpu-memory-vram">GPU Memory (VRAM)<a class="headerlink" href="#gpu-memory-vram" title="Permanent link">¶</a></h3>
+<p>The GPU Memory, also know as VRAM, is the amount of data that can be place on a GPU. 
+This memory is typically used to store the variables in your machine learning or 
+AI model. Each card has different amounts of VRAM it can hold: </p>
+<table>
+<thead>
+<tr>
+<th>GPU</th>
+<th>Memory</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>NVIDIA L4</strong></td>
+<td>24 GB</td>
+</tr>
+<tr>
+<td><strong>NVIDIA A100 40 GB</strong></td>
+<td>40 GB</td>
+</tr>
+<tr>
+<td><strong>NVIDIA A100 80 GB</strong></td>
+<td>80 GB</td>
+</tr>
+<tr>
+<td><strong>NVIDIA H100</strong></td>
+<td>94 GB</td>
+</tr>
+<tr>
+<td><strong>NVIDIA RTX PRO 6000</strong></td>
+<td>96 GB</td>
+</tr>
+</tbody>
+</table>
+<p>Unlike CPU memory (Called RAM) which you do request, for GPUs you get all the VRAM. Therefore, it is 
+important that you choose the GPU that will fit your model or data appropriately. </p>
+<ul>
+<li>You want to avoid asking for a GPU that requires far more VRAM than you need. </li>
+<li>For example, if you only need 18 GBs of VRAM, choosing an L4 GPU would be the most appropriate. 
+Asking for any other card would be an inappropriate use of resources. </li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Two GPUs is not more memory</p>
+<p>Two 24 GB L4s are not a 48 GB card. Unless your software explicitly
+supports splitting a job across devices, the second GPU is
+a separate 24 GB your job cannot reach.
+Most softwares do not support splitting a job across devices</p>
+</div>
+<p>How do you choose which sized card you should use depends on what you are trying to do.
+It is often very hard to estimate this in theory, but in practice it is possible to find
+this out through short test runs. </p>
+<p>We will see at the end of this chapter how to decide which sized card is appropriate for your job. </p>
+<h3 id="precision">Precision<a class="headerlink" href="#precision" title="Permanent link">¶</a></h3>
+<p><strong>What is precision?</strong></p>
+<p>Precision is the number of significant figures that can be stored on a GPU. </p>
+<p><strong>Why is precision important?</strong></p>
+<ol>
+<li>For some calculations, having too few significant figures can introduce errors 
+after many iterations of calculations. However it only affects some types of calculation types. </li>
+<li>It is also important because <strong>different GPUs run different precision types at different speeds</strong>.</li>
+</ol>
+<p>There are two precision types that we will focus on: </p>
+<ul>
+<li><code>float32</code> (fp32)</li>
+<li><code>float64</code>  (fp64). </li>
+</ul>
+<p>Here is some information about these two types of precision:</p>
+<table>
+<thead>
+<tr>
+<th>Format</th>
+<th>Also called</th>
+<th>Significant digits</th>
+<th>Bytes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>float32</code></td>
+<td>single precision, fp32</td>
+<td>~7</td>
+<td>4</td>
+</tr>
+<tr>
+<td><code>float64</code></td>
+<td>double precision, fp64</td>
+<td>~16</td>
+<td>8</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Which precision type does my software use?</strong></p>
+<p>In practise, it ultimately depends on what precision type your software was written for. </p>
+<ul>
+<li>fp32 is generally used for machine learning/AI processes, as well as for
+  molecular dynamics.</li>
+<li>fp64 is generally used for softwares where a high level of precision is
+  needed, such as many chemistry and engineering softwares where small errors
+  can build.</li>
+<li>Always consult your software's instruction manual to find out which precision type
+  your software uses</li>
+</ul>
+<p>As a rough guide:</p>
+<table>
+<thead>
+<tr>
+<th>Usually needs fp64</th>
+<th>Usually fine in fp32</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Quantum chemistry (VASP, Gaussian, CP2K)</td>
+<td>Machine learning, training and inference</td>
+</tr>
+<tr>
+<td>Computational fluid dynamics</td>
+<td>Molecular dynamics (LAMMPS, GROMACS)</td>
+</tr>
+<tr>
+<td>Climate and ocean models</td>
+<td>Image and signal processing</td>
+</tr>
+<tr>
+<td>Iterative solvers, eigenvalue problems</td>
+<td>Most Monte Carlo work</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Why is it important to understand the precision type my software uses?</strong></p>
+<p>It is important because different GPUs perform calculations with different precision types at different speeds. </p>
+<ul>
+<li>Every GPU can do both types of calculations. What differs enormously is how fast...</li>
+</ul>
+<p>Shown below are the calculation speeds (TFLOPS) of each card type at REANNZ for fp32 and fp64 precision.</p>
+<table>
+<thead>
+<tr>
+<th>GPU</th>
+<th>fp32</th>
+<th>fp64</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>NVIDIA L4</strong></td>
+<td>30.3 TFLOPS</td>
+<td>0.5 TFLOPS</td>
+</tr>
+<tr>
+<td><strong>NVIDIA A100</strong> (40 GB and 80 GB)</td>
+<td>19.5 TFLOPS</td>
+<td>9.7 TFLOPS</td>
+</tr>
+<tr>
+<td><strong>NVIDIA H100</strong></td>
+<td>60 TFLOPS</td>
+<td>30 TFLOPS</td>
+</tr>
+<tr>
+<td><strong>NVIDIA RTX PRO 6000</strong></td>
+<td>120 TFLOPS</td>
+<td>1.9 TFLOPS</td>
+</tr>
+</tbody>
+</table>
+<p>The number of TFLOPS each card performs across each float type is an 
+unintuitive number on its own, but the comparison of TFLOPS between float type
+and card is useful:</p>
+<ol>
+<li>
+<p><strong>The performance of fp32 software is RTX PRO 6000 &gt; H100 &gt; L4 &gt; A100</strong></p>
+<p>This means if you are wanting to perform machine learning/AI
+workloads that generally use fp32, this is the order of GPUs you would want to
+consider if you are thinking about performance.</p>
+<p>Note that while the L4s are more performative than the A100s, you may need more
+GPU memory than the 24 GB available on the L4s, so this may be a constraint.</p>
+</li>
+<li>
+<p><strong>The fp64 of the L4 and RTX PRO 6000 are very low compared to the A100 and H100</strong></p>
+<p>Roughly sixty times lower, in both cases. From this we can see that <strong>you should
+never use the L4 or the RTX PRO 6000 if your software uses fp64</strong> — if your work
+needs double precision, your choice is the A100 or the H100, whatever else is
+true.</p>
+</li>
+</ol>
+<div class="admonition warning">
+<p class="admonition-title">Do not perform double-precision jobs on the L4 or RTX Pro 6000 Cards</p>
+<p>An eight-hour double-precision job on an A100 would take roughly two weeks
+on an L4. You will not see an error message for this, so watch out. </p>
+</div>
+<p><strong>Some final pointers</strong></p>
+<ul>
+<li>If your software can use fp32, use it over fp64. fp32 calculations are generally much faster than fp64. </li>
+<li>If you know that your software performs calculations where small errors compound over millions of steps, you will need fp64.</li>
+</ul>
+<h2 id="summary-choosing-your-card">Summary: Choosing your card<a class="headerlink" href="#summary-choosing-your-card" title="Permanent link">¶</a></h2>
+<p>GPU memory (VRAM) and precision type needed are the main points you need to 
+consider when choosing a GPU for youe job. The figure below shows a graphic that 
+is designed to help you test which GPU is right for you. </p>
+<p><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="../fig/choosing-a-gpu.png" data-desc-position="bottom"><img alt="Choosing a GPU" class="center" src="../fig/choosing-a-gpu.png"></a></p>
+<p>The general approach is the following:</p>
+<ol>
+<li>
+<p>Determine which precision type you need. This determine the types of GPUs you should use,
+as well as the order you should try them in.</p>
+</li>
+<li>
+<p>Perform 15 minute test jobs on each GPU in the order given to determine which is appropriate for 
+you to use: </p>
+<ol>
+<li><strong>Did the job run out of GPU memory?</strong> Move to the next GPU up the ladder.
+   Nothing else you can do will make it fit.</li>
+<li><strong>Is the GPU sitting at 0% utilisation?</strong> Stop climbing — your program is
+   not using the GPU at all, and a bigger one will not change that.</li>
+<li><strong>Record your GPU utilisation, GPU memory and step count.</strong> Do this before
+   deciding anything, while the numbers are in front of you.</li>
+<li><strong>Are you happy with how long the calculation took?</strong> If yes, <strong>this is your
+   card</strong> — stop here. If not, move up one rung and run the 15 minutes again.</li>
+</ol>
+</li>
+</ol>
+<div class="admonition note">
+<p class="admonition-title">Why record the numbers before you decide</p>
+<p>Step 4 is a judgement, and it is much easier to make with the previous
+rung's figures written down. "Is this fast enough?" is hard to answer in
+the abstract; "is this enough faster than the L4 to be worth the queue?" is
+not.</p>
+<p><a href="../06-tools-for-measuring/">Chapter 6</a> covers reading those numbers off a finished
+job with <code>seff</code>.</p>
+</div>
+<div class="admonition graduation-cap">
+<p class="admonition-title">Keypoints</p>
+<ul>
+<li>Five things to ask for, differing in <strong>memory</strong> and in
+  <strong>double-precision speed</strong>, not simply in how fast they are.</li>
+<li>The A100 comes in <strong>40 GB and 80 GB</strong>. They are the same chip at the same
+  speed — name the smaller one if your job fits in it.</li>
+<li>Name the type, and ask for <strong>one</strong> unless your software can use more.</li>
+<li><strong>There is no flag for GPU memory</strong> — you get all of whatever card you
+  asked for, and two GPUs do not give you more.</li>
+<li>Estimate memory at roughly 4× the model size for training, or measure a
+  short run.</li>
+<li><strong>fp64 work belongs on an A100 or H100.</strong> The L4 and RTX PRO 6000 are
+  about sixty times slower at it, with no warning.</li>
+<li>Then take the <strong>smallest card that fits</strong> — shorter queue, fairer share,
+  same result.</li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden="">
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"></path></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer">
+        
+          
+          <a href="../01-the-submit-script/" class="md-footer__link md-footer__link--prev" aria-label="Previous: 1. The submit script">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                1. The submit script
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../03-how-many-cpus/" class="md-footer__link md-footer__link--next" aria-label="Next: 3. How many CPUs do I need?">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                3. How many CPUs do I need?
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"></path></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Introduction to Using GPUs workshop material is licensed under a <a rel="noopener" target="_blank" href="https://www.gnu.org/licenses/gpl-3.0.en.html">GNU General Public License v3.0</a>
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.tracking", "navigation.sections", "navigation.expand", "navigation.top", "navigation.footer", "content.code.copy", "content.code.annotate"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+        <script src="../javascripts/mathjax.js"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  
+<script id="init-glightbox">const lightbox = GLightbox({"touchNavigation": true, "loop": false, "zoomable": true, "draggable": true, "openEffect": "zoom", "closeEffect": "zoom", "slideEffect": "slide"});
+document$.subscribe(()=>{ lightbox.reload(); });
+</script></body></html>

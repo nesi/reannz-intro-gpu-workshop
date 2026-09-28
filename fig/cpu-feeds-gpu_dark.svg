@@ -1,0 +1,99 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 215" width="700" height="215" role="img" aria-label="A timeline with two tracks. A single CPU core is fully occupied preparing batches back to back. The GPU computes each batch only after the core has finished preparing it, and because preparing takes about two and a half times as long as computing the GPU spends most of the job idle.">
+  <title>Why a GPU job needs CPU cores</title>
+  <desc>One CPU core prepares each batch before the GPU can compute on it. Preparing takes about two and a half times as long as computing, so the GPU finishes early and then waits, idle, for most of the job.</desc>
+
+  <defs>
+    <!-- Idle time is drawn as absence of work: hatched, not filled. -->
+    <pattern id="idleHatch" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+      <rect width="8" height="8" fill="#2a2016"/>
+      <rect width="3" height="8" fill="#f8961d" opacity="0.38"/>
+    </pattern>
+    <marker id="handoff" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#c3d4e0" opacity="0.6"/>
+    </marker>
+    <marker id="timeArrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#c3d4e0" opacity="0.6"/>
+    </marker>
+    <!-- The tracks run off the right edge rather than stopping dead: a
+         luminance mask fades them out, and an ellipsis follows. -->
+    <linearGradient id="fadeGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset="1" stop-color="#000000"/>
+    </linearGradient>
+    <mask id="fadeRight" maskUnits="userSpaceOnUse" x="0" y="0" width="700" height="215">
+      <rect x="0" y="0" width="605" height="215" fill="#ffffff"/>
+      <rect x="605" y="0" width="55" height="215" fill="url(#fadeGrad)"/>
+    </mask>
+  </defs>
+
+  <g font-family="Mukta, 'Helvetica Neue', Helvetica, Arial, sans-serif">
+
+    <!-- Row labels. The core count is on the label because the whole point of
+         the picture is that there is only one core doing the preparing. -->
+    <text x="76" y="60" font-size="15" font-weight="700" fill="#e9f1f7" text-anchor="end">CPU</text>
+    <text x="76" y="76" font-size="11" fill="#c3d4e0" opacity="0.85" text-anchor="end">1 core</text>
+    <text x="76" y="127" font-size="15" font-weight="700" fill="#e9f1f7" text-anchor="end">GPU</text>
+
+    <!-- CPU track: never stops. Each batch takes 180 units to prepare. -->
+    <g mask="url(#fadeRight)">
+      <rect x="90"  y="40" width="180" height="44" rx="4" fill="#23abe3"/>
+      <rect x="270" y="40" width="180" height="44" rx="4" fill="#23abe3"/>
+      <rect x="450" y="40" width="180" height="44" rx="4" fill="#23abe3"/>
+      <rect x="624" y="40" width="186" height="44" rx="4" fill="#23abe3"/>
+      <!-- hairlines so the three blocks read as three, not one long bar -->
+      <path d="M 270 40 L 270 84 M 450 40 L 450 84" stroke="#0d1b2a" stroke-width="2" opacity="0.85"/>
+      <g font-size="13" fill="#04202f" font-weight="600" text-anchor="middle">
+        <text x="180" y="67">prepare 1</text>
+        <text x="360" y="67">prepare 2</text>
+        <text x="540" y="67">prepare 3</text>
+      </g>
+    </g>
+
+    <!-- GPU track: 70 units of work per batch, so it is done long before the
+         next batch exists. The hatching is most of the row. -->
+    <g mask="url(#fadeRight)">
+      <rect x="90"  y="100" width="180" height="44" rx="4" fill="url(#idleHatch)" stroke="#f8961d" stroke-width="1.5" stroke-dasharray="5 3"/>
+      <rect x="270" y="100" width="70"  height="44" rx="4" fill="#1f3f63"/>
+      <rect x="340" y="100" width="110" height="44" rx="4" fill="url(#idleHatch)" stroke="#f8961d" stroke-width="1.5" stroke-dasharray="5 3"/>
+      <rect x="450" y="100" width="70"  height="44" rx="4" fill="#1f3f63"/>
+      <rect x="520" y="100" width="110" height="44" rx="4" fill="url(#idleHatch)" stroke="#f8961d" stroke-width="1.5" stroke-dasharray="5 3"/>
+      <rect x="624" y="100" width="76"  height="44" rx="4" fill="#1f3f63"/>
+      <g text-anchor="middle">
+        <text x="180" y="127" font-size="13" fill="#f8b45a">waiting for batch 1</text>
+        <text x="305" y="127" font-size="11" fill="#e9f1f7">compute 1</text>
+        <text x="395" y="127" font-size="12" fill="#f8b45a">idle</text>
+        <text x="485" y="127" font-size="11" fill="#e9f1f7">compute 2</text>
+        <text x="575" y="127" font-size="12" fill="#f8b45a">idle</text>
+      </g>
+    </g>
+
+    <!-- "and so on" -->
+    <g font-size="20" fill="#c3d4e0" opacity="0.6" text-anchor="middle">
+      <text x="668" y="70">…</text>
+      <text x="668" y="130">…</text>
+    </g>
+
+    <!-- Handoffs: the GPU cannot start batch N until the CPU has finished it. -->
+    <g stroke="#c3d4e0" stroke-width="1.3" opacity="0.6" stroke-dasharray="3 2" marker-end="url(#handoff)">
+      <path d="M 270 86 L 270 97"/>
+      <path d="M 450 86 L 450 97"/>
+    </g>
+
+    <!-- Time -->
+    <path d="M 90 164 L 648 164" stroke="#c3d4e0" stroke-width="1.3" opacity="0.6" marker-end="url(#timeArrow)"/>
+    <text x="660" y="168" font-size="12" fill="#c3d4e0" opacity="0.85">time</text>
+
+    <!-- Legend -->
+    <g font-size="12" fill="#c3d4e0">
+      <rect x="90" y="188" width="12" height="12" rx="2" fill="#23abe3"/>
+      <text x="108" y="198">CPU preparing a batch</text>
+
+      <rect x="250" y="188" width="12" height="12" rx="2" fill="#1f3f63"/>
+      <text x="268" y="198">GPU computing</text>
+
+      <rect x="390" y="188" width="12" height="12" rx="2" fill="url(#idleHatch)" stroke="#f8961d" stroke-width="1.2"/>
+      <text x="408" y="198">GPU idle, waiting for work</text>
+    </g>
+
+  </g>
+</svg>

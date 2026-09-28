@@ -1,0 +1,1763 @@
+<!DOCTYPE html><html lang="en" class="no-js"><head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+        <meta name="author" content="REANNZ">
+      
+      
+        <link rel="canonical" href="https://nesi.github.io/reannz-intro-gpu-workshop/07-putting-it-together/">
+      
+      
+        <link rel="prev" href="../06-tools-for-measuring/">
+      
+      
+        <link rel="next" href="../summarising/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../fig/reannz-favicon.jpeg">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>7. Putting it all together - Introduction to Using GPUs on High Performance Clusters (HPC)</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Mukta:300,300i,400,400i,700,700i%7CFira+Code:400,400i,700,700i&amp;display=fallback">
+        <style>:root{--md-text-font:"Mukta";--md-code-font:"Fira Code"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  <link href="../assets/stylesheets/glightbox.min.css" rel="stylesheet"><script src="../assets/javascripts/glightbox.min.js"></script><style id="glightbox-style">
+            html.glightbox-open { overflow: initial; height: 100%; }
+            .gslide-title { margin-top: 0px; user-select: text; }
+            .gslide-desc { color: #666; user-select: text; }
+            .gslide-image img { background: white; }
+            .gscrollbar-fixer { padding-right: 15px; }
+            .gdesc-inner { font-size: 0.75rem; }
+            body[data-md-color-scheme="slate"] .gdesc-inner { background: var(--md-default-bg-color); }
+            body[data-md-color-scheme="slate"] .gslide-title { color: var(--md-default-fg-color); }
+            body[data-md-color-scheme="slate"] .gslide-desc { color: var(--md-default-fg-color); }
+        </style></head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#7-putting-it-all-together" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="Introduction to Using GPUs on High Performance Clusters (HPC)" class="md-header__button md-logo" aria-label="Introduction to Using GPUs on High Performance Clusters (HPC)" data-md-component="logo">
+      
+  <img src="../fig/reannz-logo.svg" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"></path></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Introduction to Using GPUs on High Performance Clusters (HPC)
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              7. Putting it all together
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="indigo" aria-label="Switch to light mode" type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_1" hidden="">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m14.3 16-.7-2h-3.2l-.7 2H7.8L11 7h2l3.2 9zM20 8.69V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12zm-9.15 3.96h2.3L12 9z"></path></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="indigo" aria-label="Switch to dark mode" type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_2" hidden="">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"></path></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="indigo" aria-label="Switch to system preference" type="radio" name="__palette" id="__palette_2">
+    
+      <label class="md-header__button md-icon" title="Switch to system preference" for="__palette_0" hidden="">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"></path></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required="">
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix="">
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/nesi/reannz-intro-gpu-workshop" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"></path></svg>
+  </div>
+  <div class="md-source__repository">
+    nesi/reannz-intro-gpu-workshop
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Introduction to Using GPUs on High Performance Clusters (HPC)" class="md-nav__button md-logo" aria-label="Introduction to Using GPUs on High Performance Clusters (HPC)" data-md-component="logo">
+      
+  <img src="../fig/reannz-logo.svg" alt="logo">
+
+    </a>
+    Introduction to Using GPUs on High Performance Clusters (HPC)
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/nesi/reannz-intro-gpu-workshop" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"></path></svg>
+  </div>
+  <div class="md-source__repository">
+    nesi/reannz-intro-gpu-workshop
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix="">
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2">
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Writing your submit script
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Writing your submit script
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix="">
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01-the-submit-script/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    1. The submit script
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02-which-gpu/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2. Which GPU should I use?
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03-how-many-cpus/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    3. How many CPUs do I need?
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04-how-much-memory/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    4. How much memory should I request?
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3">
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Measuring your GPU jobs
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Measuring your GPU jobs
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix="">
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05-measuring-your-jobs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    5. Measuring your GPU jobs
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06-tools-for-measuring/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6. The tools for measuring a GPU job
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked="">
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Putting it all together
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Putting it all together
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix="">
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    7. Putting it all together
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    7. Putting it all together
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+      
+        <li class="md-nav__item">
+  <a href="#pass-1-watch-a-job-while-it-runs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pass 1: watch a job while it runs
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pass-2-which-card-does-it-fit-in" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pass 2: which card does it fit in?
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pass-3-how-many-cores-and-how-much-memory" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pass 3: how many cores, and how much memory?
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Pass 3: how many cores, and how much memory?">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#cores" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cores
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#memory" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Memory
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#writing-the-answers-back" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Writing the answers back
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../summarising/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Summary and checklist
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_5">
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Supplementary
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Supplementary
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix="">
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../S1-what-a-gpu-is/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    S1: What a GPU Is
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../S2-splitting-the-work/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    S2: Splitting CPU and GPU Work
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6">
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reference
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Reference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix="">
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../R1-command-reference/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    R1: Command Reference
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../R2-gpu-reference/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    R2: The GPUs on this Cluster
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_7">
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Setup (for Trainers)
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Setup (for Trainers)
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix="">
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../setup-gpu-workshop/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Setup (for trainers)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+      
+        <li class="md-nav__item">
+  <a href="#pass-1-watch-a-job-while-it-runs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pass 1: watch a job while it runs
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pass-2-which-card-does-it-fit-in" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pass 2: which card does it fit in?
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pass-3-how-many-cores-and-how-much-memory" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pass 3: how many cores, and how much memory?
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Pass 3: how many cores, and how much memory?">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#cores" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cores
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#memory" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Memory
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#writing-the-answers-back" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Writing the answers back
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="7-putting-it-all-together">7. Putting it all together<a class="headerlink" href="#7-putting-it-all-together" title="Permanent link">¶</a></h1>
+<div class="admonition clipboard-list">
+<p class="admonition-title">Lesson Objectives</p>
+<ul>
+<li>Watch a running job and judge from the live display whether the GPU is busy</li>
+<li>Use <code>seff</code> across a set of finished jobs to find the smallest card your
+  work fits in</li>
+<li>Use <code>seff</code> and <code>profile_plot</code> to settle the core count and the memory
+  request</li>
+<li>Write the answers back into a production submit script</li>
+</ul>
+</div>
+<div class="admonition clipboard-question">
+<p class="admonition-title">Questions</p>
+<ul>
+<li>I have the tools. How do I actually use them on a real job?</li>
+<li>How do I know when I am finished tuning?</li>
+</ul>
+</div>
+<p>Everything so far has been one piece at a time. This chapter runs the whole
+loop, on one job, from first guess to a script you would keep.</p>
+<p>This is the diagram from <a href="../02-which-gpu/">chapter 2</a> again — it is the plan
+for this entire chapter:</p>
+<p><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="../fig/choosing-a-gpu.png" data-desc-position="bottom"><img alt="Choosing a GPU" class="center" src="../fig/choosing-a-gpu.png"></a></p>
+<p>We will work through it in three passes:</p>
+<table>
+<thead>
+<tr>
+<th>Pass</th>
+<th>Question</th>
+<th>Tool</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>1</strong></td>
+<td>Is the job using the GPU at all, and what does it look like?</td>
+<td><code>nvtop</code>, live</td>
+</tr>
+<tr>
+<td><strong>2</strong></td>
+<td>Which card does it fit in?</td>
+<td><code>seff</code>, across several finished jobs</td>
+</tr>
+<tr>
+<td><strong>3</strong></td>
+<td>How many cores and how much memory does it need?</td>
+<td><code>seff</code> and <code>profile_plot</code></td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="pass-1-watch-a-job-while-it-runs">Pass 1: watch a job while it runs<a class="headerlink" href="#pass-1-watch-a-job-while-it-runs" title="Permanent link">¶</a></h2>
+<p>Before measuring anything carefully, look at the job with your own eyes. It
+takes two minutes and it catches the failures that would make every later
+measurement meaningless.</p>
+<div class="admonition dumbbell">
+<p class="admonition-title">Exercise 1: watch a job live</p>
+<p><strong>Submit the job.</strong></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nb">cd</span><span class="w"> </span>~/gpu-training/07_putting_it_together
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>cat<span class="w"> </span>watch-me.sl
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>sbatch<span class="w"> </span>watch-me.sl
+</code></pre></div>
+<p><strong>Find it, and jump onto its node.</strong></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>squeue<span class="w"> </span>--me
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>svisit<span class="w"> </span>&lt;JobID&gt;
+</code></pre></div>
+<p><strong>Watch it.</strong></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>nvtop
+</code></pre></div>
+<p>Leave it running for a minute and watch the two graphs. Then press <code>q</code> to
+quit, and <code>exit</code> to come back to the login node.</p>
+<details>
+<summary>What you should see</summary>
+<p>A <strong>sawtooth</strong>. GPU utilisation climbs, drops back, climbs again —
+over and over, never settling high.</p>
+<p>That shape is the <a href="../03-how-many-cpus/">starved GPU from chapter
+3</a>, seen live. Each rise is the GPU working on a
+batch; each fall is the GPU waiting while the CPU prepares the next
+one.</p>
+<p>GPU memory, meanwhile, will be flat. It was allocated at start-up and
+does not change.</p>
+</details>
+</div>
+<p><strong>What you are checking for at this stage</strong> is not a number, it is a category:</p>
+<table>
+<thead>
+<tr>
+<th>What the display shows</th>
+<th>What it means</th>
+<th>What to do</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Flat at zero, your process absent</td>
+<td>The job is not using the GPU</td>
+<td>Stop. Nothing below will help until that is fixed</td>
+</tr>
+<tr>
+<td>Sawtooth</td>
+<td>Starved between batches</td>
+<td>Continue, and fix it in pass 3</td>
+</tr>
+<tr>
+<td>High and flat</td>
+<td>Already well fed</td>
+<td>Continue to pass 2</td>
+</tr>
+<tr>
+<td>Memory climbing without limit</td>
+<td>A leak</td>
+<td>Fix the code before tuning anything</td>
+</tr>
+</tbody>
+</table>
+<p>Only once the GPU is genuinely being used is there any point measuring how
+<em>well</em> it is being used.</p>
+<hr>
+<h2 id="pass-2-which-card-does-it-fit-in">Pass 2: which card does it fit in?<a class="headerlink" href="#pass-2-which-card-does-it-fit-in" title="Permanent link">¶</a></h2>
+<p>Now the memory ladder from the flow diagram. The same job has already been run
+on each card in turn, so you do not have to wait for five queues.</p>
+<div class="admonition dumbbell">
+<p class="admonition-title">Exercise 2: find the smallest card that fits</p>
+<p><strong>List the finished jobs.</strong></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="nb">cd</span><span class="w"> </span>~/gpu-training/07_putting_it_together
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>cat<span class="w"> </span>jobs-by-card.txt
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>l4         2001001
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>a100_40    2001002
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>a100       2001003
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>h100       2001004
+<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>pro_6000   2001005
+</code></pre></div>
+<p><strong>Run <code>seff</code> on each of them</strong> and fill in the table below.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>seff<span class="w"> </span><span class="m">2001001</span>
+</code></pre></div>
+<table>
+<thead>
+<tr>
+<th>Card</th>
+<th>State</th>
+<th>GPU memory used</th>
+<th>Fits?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>l4</code> (24 GB)</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>a100_40</code> (40 GB)</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>a100</code> (80 GB)</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>h100</code> (94 GB)</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>pro_6000</code> (96 GB)</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<details>
+<summary>What you should find</summary>
+<p>The L4 job <strong>failed</strong>. The others all completed, and all report the
+same peak GPU memory:</p>
+<table>
+<thead>
+<tr>
+<th>Card</th>
+<th>State</th>
+<th>GPU memory used</th>
+<th>Fits?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>l4</code> (24 GB)</td>
+<td><code>FAILED</code></td>
+<td>—</td>
+<td><strong>No</strong></td>
+</tr>
+<tr>
+<td><code>a100_40</code> (40 GB)</td>
+<td><code>COMPLETED</code></td>
+<td>30.1 GB of 40 GB — 75%</td>
+<td><strong>Yes</strong></td>
+</tr>
+<tr>
+<td><code>a100</code> (80 GB)</td>
+<td><code>COMPLETED</code></td>
+<td>30.1 GB of 80 GB — 38%</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td><code>h100</code> (94 GB)</td>
+<td><code>COMPLETED</code></td>
+<td>30.1 GB of 94 GB — 32%</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td><code>pro_6000</code> (96 GB)</td>
+<td><code>COMPLETED</code></td>
+<td>30.1 GB of 96 GB — 31%</td>
+<td>Yes</td>
+</tr>
+</tbody>
+</table>
+<p>The job needs about <strong>30 GB</strong>, so the L4's 24 GB was never going to be
+enough — and its output file will say so:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>CUDA out of memory. Tried to allocate 512.00 MiB (GPU 0; 24564 MiB
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>total capacity; 23890 MiB already allocated; 118 MiB free).
+</code></pre></div>
+<p><strong>The answer is <code>a100_40</code>.</strong> It is the smallest card the job fits in,
+so it is the one you will wait least for. Every card above it runs the
+job at the same speed while holding memory somebody else needed.</p>
+</details>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">75% is the right kind of full</p>
+<p>A job filling 75% of its card has headroom for a slightly larger input
+without falling over, and is not wasting most of a scarce resource.</p>
+<p><strong>Below about 25%, look at the card underneath.</strong> Above about 90%, look at
+the card above — you are one bigger input away from the L4's fate.</p>
+</div>
+<hr>
+<h2 id="pass-3-how-many-cores-and-how-much-memory">Pass 3: how many cores, and how much memory?<a class="headerlink" href="#pass-3-how-many-cores-and-how-much-memory" title="Permanent link">¶</a></h2>
+<p>The card is settled. Now the two requests that do not change which card you
+need, but do change how well it is used.</p>
+<h3 id="cores">Cores<a class="headerlink" href="#cores" title="Permanent link">¶</a></h3>
+<div class="admonition dumbbell">
+<p class="admonition-title">Exercise 3a: settle the core count</p>
+<p>The same job, on <code>a100_40</code>, submitted at five core counts:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>cat<span class="w"> </span>jobs-by-cores.txt
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>1  cpu   2002001
+<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>2  cpus  2002002
+<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>4  cpus  2002003
+<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a>8  cpus  2002004
+<a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a>16 cpus  2002005
+</code></pre></div>
+<p>Run <code>seff</code> on each and record two numbers: <strong>CPU Utilisation</strong> and <strong>GPU
+Utilisation</strong>.</p>
+<details>
+<summary>What you should find</summary>
+<table>
+<thead>
+<tr>
+<th>Cores</th>
+<th>CPU efficiency</th>
+<th>GPU utilisation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>100%</td>
+<td>24%</td>
+</tr>
+<tr>
+<td>2</td>
+<td>81%</td>
+<td>31%</td>
+</tr>
+<tr>
+<td>4</td>
+<td>64%</td>
+<td><strong>35%</strong></td>
+</tr>
+<tr>
+<td>8</td>
+<td>38%</td>
+<td>36%</td>
+</tr>
+<tr>
+<td>16</td>
+<td>20%</td>
+<td>36%</td>
+</tr>
+</tbody>
+</table>
+<p>The same curve as <a href="../03-how-many-cpus/">chapter 3</a>: GPU utilisation
+climbs steeply, then flattens at 4. Going from 4 cores to 16 buys one
+percentage point of GPU for four times the CPU request.</p>
+<p><strong>The answer is 4.</strong></p>
+<p>Note that the one-core job has the <em>best</em> CPU efficiency of the five
+and is the worst job of the five. CPU efficiency is a diagnostic, not
+a target.</p>
+</details>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Use <code>profile_plot</code> when the average looks wrong</p>
+<p><code>seff</code> gives you 35% for the four-core job. If that figure is lower than
+you expected, plot it:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>profile_plot<span class="w"> </span><span class="m">2002003</span>
+</code></pre></div>
+<p>A <strong>steady</strong> 35% and a job <strong>alternating</strong> between 100% and 0% both average
+35%, and they have completely different causes. Only the plot distinguishes
+them — see <a href="../06-tools-for-measuring/">chapter 6</a>.</p>
+</div>
+<h3 id="memory">Memory<a class="headerlink" href="#memory" title="Permanent link">¶</a></h3>
+<div class="admonition dumbbell">
+<p class="admonition-title">Exercise 3b: settle the memory request</p>
+<p>Take the four-core job — <code>seff 2002003</code> — and look at the <code>Mem
+Utilisation</code> line rather than the GPU ones.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>Mem Utilisation:  19.4%  6.20 GB of 32.00 GB
+</code></pre></div>
+<ol>
+<li>What was the peak CPU memory this job actually used?</li>
+<li>What was requested?</li>
+<li>What should the request be, allowing 20–30% headroom?</li>
+</ol>
+<details>
+<summary>Answer</summary>
+<p>The job peaked at <strong>6.2 GB</strong> and asked for <strong>32 GB</strong> — so 26 GB sat
+reserved and untouched for the whole run, making the job harder to
+schedule for no benefit.</p>
+<p>6.2 GB plus 30% is about 8 GB. <strong>Ask for <code>--mem 8GB</code>.</strong></p>
+<p>Be careful not to size this from the one-core run. Memory scales with
+the core count (<a href="../04-how-much-memory/">chapter 4</a>) — measure it at
+the core count you have actually chosen.</p>
+</details>
+</div>
+<hr>
+<h2 id="writing-the-answers-back">Writing the answers back<a class="headerlink" href="#writing-the-answers-back" title="Permanent link">¶</a></h2>
+<p>Three passes, three answers. Put them in a script you would keep:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="ch">#!/bin/bash -e</span>
+<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="c1">#SBATCH --job-name      my-real-job</span>
+<a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a><span class="c1">#SBATCH --account       nesi99991</span>
+<a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a><span class="c1">#SBATCH --time          08:00:00</span>
+<a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a><span class="c1">#SBATCH --gpus-per-node a100_40:1     # (1)</span>
+<a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a><span class="c1">#SBATCH --cpus-per-task 4             # (2)</span>
+<a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a><span class="c1">#SBATCH --mem           8GB           # (3)</span>
+<a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a><span class="c1">#SBATCH --output        my-job-%j.out</span>
+<a id="__codelineno-11-9" name="__codelineno-11-9" href="#__codelineno-11-9"></a>
+<a id="__codelineno-11-10" name="__codelineno-11-10" href="#__codelineno-11-10"></a><span class="c1"># your program here</span>
+</code></pre></div>
+<ol>
+<li><strong>Pass 2.</strong> The smallest card the job fits in.</li>
+<li><strong>Pass 3a.</strong> Where GPU utilisation stopped climbing.</li>
+<li><strong>Pass 3b.</strong> Measured peak, plus headroom.</li>
+</ol>
+<div class="admonition warning">
+<p class="admonition-title">Take the testing lines out</p>
+<p><code>--qos debug</code>, <code>--profile task</code> and <code>--acctg-freq=1</code> all belong to the
+15-minute test job and none of them belong here.</p>
+<p>Leaving <code>--qos debug</code> in a production script will get the job killed at the
+debug walltime limit. Leaving the profiling on writes a sample every second
+for the entire run.</p>
+<p>And put <code>--time</code> back to something realistic — the 15 minutes was for
+testing.</p>
+</div>
+<div class="admonition graduation-cap">
+<p class="admonition-title">Keypoints</p>
+<ul>
+<li><strong>Look before you measure.</strong> A minute with <code>nvtop</code> tells you whether the
+  job is worth measuring at all.</li>
+<li><strong>Card first, then cores, then memory.</strong> The card decides what is
+  possible; the other two decide how well it goes.</li>
+<li>The smallest card that fits is the right card. <strong>75% full is healthy;
+  under 25% means try the card below.</strong></li>
+<li>Choose the core count where <strong>GPU utilisation stops climbing</strong>, not where
+  CPU efficiency looks best.</li>
+<li>Size memory from a run at the core count you have actually settled on.</li>
+<li><strong>Strip the testing flags</strong> before the script becomes a real job.</li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden="">
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"></path></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer">
+        
+          
+          <a href="../06-tools-for-measuring/" class="md-footer__link md-footer__link--prev" aria-label="Previous: 6. The tools for measuring a GPU job">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                6. The tools for measuring a GPU job
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../summarising/" class="md-footer__link md-footer__link--next" aria-label="Next: Summary and checklist">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                Summary and checklist
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"></path></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Introduction to Using GPUs workshop material is licensed under a <a rel="noopener" target="_blank" href="https://www.gnu.org/licenses/gpl-3.0.en.html">GNU General Public License v3.0</a>
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.tracking", "navigation.sections", "navigation.expand", "navigation.top", "navigation.footer", "content.code.copy", "content.code.annotate"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+        <script src="../javascripts/mathjax.js"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  
+<script id="init-glightbox">const lightbox = GLightbox({"touchNavigation": true, "loop": false, "zoomable": true, "draggable": true, "openEffect": "zoom", "closeEffect": "zoom", "slideEffect": "slide"});
+document$.subscribe(()=>{ lightbox.reload(); });
+</script></body></html>

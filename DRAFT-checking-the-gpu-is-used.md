@@ -94,7 +94,7 @@ sbatch check-gpu.sl
 
 2. What the driver reports (nvidia-smi)
 ---------------------------------------
-  NVIDIA L4, 100 MiB
+  NVIDIA L4, 200 MiB
 
 3. What your software reports (PyTorch)
 ---------------------------------------
@@ -104,7 +104,7 @@ sbatch check-gpu.sl
   device count:          1
   device name:           NVIDIA L4
   compute capability:    8.9
-  device memory (VRAM):  100 MB
+  device memory (VRAM):  200 MB
   test calculation:      1000 (expected 1000)
 
   This job has a GPU and your software is using it.

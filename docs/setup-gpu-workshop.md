@@ -26,9 +26,9 @@ out-of-memory errors are real; the arithmetic runs on the CPU.
 
     ```yaml
     gpu:
-      k8s_container: ghcr.io/nesi/training-environment-jupyter-gpu-app:v0.5.0
+      k8s_container: ghcr.io/nesi/training-environment-jupyter-gpu-app:v0.5.1
       repo: https://github.com/nesi/training-environment-jupyter-gpu-app.git
-      version: 'v0.5.0'
+      version: 'v0.5.1'
       enabled: true
       pre_pull: true
     ```
@@ -46,11 +46,11 @@ out-of-memory errors are real; the arithmetic runs on the CPU.
 |---|---|---|
 | CPUs | 4 | Do not go below this — chapter 3 needs at least 4 to show the curve |
 | Memory | 8 GB | |
-| NVIDIA L4 — GPU memory | `100 MiB` | |
-| NVIDIA A100 40 GB — GPU memory | `100 MiB` | |
-| NVIDIA A100 80 GB — GPU memory | `100 MiB` | |
-| NVIDIA H100 NVL — GPU memory | `100 MiB` | |
-| NVIDIA RTX PRO 6000 — GPU memory | `100 MiB` | |
+| NVIDIA L4 — GPU memory | `200 MiB` | |
+| NVIDIA A100 40 GB — GPU memory | `200 MiB` | |
+| NVIDIA A100 80 GB — GPU memory | `200 MiB` | |
+| NVIDIA H100 NVL — GPU memory | `200 MiB` | |
+| NVIDIA RTX PRO 6000 — GPU memory | `200 MiB` | |
 
 There is one control per card, and the session's node presents every card you
 leave switched on. That is what makes `--gpus-per-node a100:1` and
@@ -58,7 +58,7 @@ leave switched on. That is what makes `--gpus-per-node a100:1` and
 something a learner can practise rather than only read. **Not on this node**
 leaves a card out, and asking for it is then refused, as on the cluster.
 
-!!! warning "Keep the GPU memory at 100 MB"
+!!! warning "Keep the GPU memory at 200 MB"
 
     Every exercise is sized to fit inside it, and the out-of-memory
     demonstrations depend on the cards being small. Raising one to its real
@@ -85,7 +85,7 @@ seff 2001001                     # a recorded job: FAILED, 98% of 24 GB
 ```
 
 If `nvidia-smi -L` shows a single card, or reports 23034MiB rather than
-100MiB, the session is running an older image than the branch expects.
+200MiB, the session is running an older image than the branch expects.
 
 ## Trying it without deploying
 

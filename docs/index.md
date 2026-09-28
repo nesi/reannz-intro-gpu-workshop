@@ -92,9 +92,9 @@ this cluster](R2-gpu-reference.md).
     anything. Everything you learn about *reading* these tools transfers
     unchanged. Nothing you learn about speed does.
 
-    The emulated card reports **1 GB of GPU memory** rather than the 24 GB a
-    real one has, so running out of memory takes seconds rather than filling a
-    real card.
+    The node has one of every card on Mahuika, and each reports **100 MB of
+    GPU memory** rather than the 24 to 96 GB a real one has, so running out of
+    memory takes seconds rather than filling a real card.
 
 - - -
 

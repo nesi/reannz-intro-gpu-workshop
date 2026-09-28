@@ -26,9 +26,9 @@ out-of-memory errors are real; the arithmetic runs on the CPU.
 
     ```yaml
     gpu:
-      k8s_container: ghcr.io/nesi/training-environment-jupyter-gpu-app:v0.3.1
+      k8s_container: ghcr.io/nesi/training-environment-jupyter-gpu-app:v0.5.0
       repo: https://github.com/nesi/training-environment-jupyter-gpu-app.git
-      version: 'v0.3.1'
+      version: 'v0.5.0'
       enabled: true
       pre_pull: true
     ```
@@ -44,33 +44,48 @@ out-of-memory errors are real; the arithmetic runs on the CPU.
 
 | Option | Default | Notes |
 |---|---|---|
-| CPUs | 4 | Do not go below this — chapter 2 needs at least 4 to show the curve |
+| CPUs | 4 | Do not go below this — chapter 3 needs at least 4 to show the curve |
 | Memory | 8 GB | |
-| GPU model | `l4` | Also `a100`, `h100`, `rtxpro6000` |
-| GPU VRAM | `1GiB` | Keep this. It makes chapter 2 take seconds instead of filling real RAM |
-| GPU count | 1 | |
+| NVIDIA L4 — GPU memory | `100 MiB` | |
+| NVIDIA A100 40 GB — GPU memory | `100 MiB` | |
+| NVIDIA A100 80 GB — GPU memory | `100 MiB` | |
+| NVIDIA H100 NVL — GPU memory | `100 MiB` | |
+| NVIDIA RTX PRO 6000 — GPU memory | `100 MiB` | |
 
-!!! warning "Keep the VRAM at 1 GB"
+There is one control per card, and the session's node presents every card you
+leave switched on. That is what makes `--gpus-per-node a100:1` and
+`--gpus-per-node l4:1` different requests, so the chapter on choosing a GPU is
+something a learner can practise rather than only read. **Not on this node**
+leaves a card out, and asking for it is then refused, as on the cluster.
 
-    Every exercise is sized to fit inside 1 GB, and chapter 2's out-of-memory
-    demonstration depends on the card being small. Raising it to the card's
-    real size would mean a learner needs to allocate 23 GB of host RAM to
-    trigger an OOM, which is not affordable per session.
+!!! warning "Keep the GPU memory at 100 MB"
+
+    Every exercise is sized to fit inside it, and the out-of-memory
+    demonstrations depend on the cards being small. Raising one to its real
+    size would mean a learner needs to allocate 23 GB of host RAM to trigger an
+    OOM, which is not affordable per session.
+
+    Emulated GPU memory is accounted rather than reserved, so five cards cost
+    nothing until something is put on them — but a card that is filled does
+    cost that much of the session's 8 GB.
 
 ## Checking a deployment
 
 In a session terminal:
 
 ```bash
-nvidia-smi                       # an L4, 1024MiB
+nvidia-smi -L                    # five cards: l4, a100_40, a100, h100, pro_6000
+sinfo -l                         # the same list, spelled as --gpus-per-node wants
 python3 -c "import torch; print(torch.cuda.is_available())"   # True
-cd ~/gpu-training && ls          # six numbered chapters + supplementary
-sbatch 01_getting_a_gpu_job_running/hello-gpu.sl
+cd ~/gpu-training && ls          # 06, 07 and supplementary
+sbatch 06_tools_for_measuring/test-job.sl
 seff <jobid>                     # must include the two GPU lines
+profile_plot <jobid>             # writes <jobid>_profile.png
+seff 2001001                     # a recorded job: FAILED, 98% of 24 GB
 ```
 
-If `nvidia-smi` reports 23034MiB rather than 1024MiB, the session is running an
-older image than the branch expects.
+If `nvidia-smi -L` shows a single card, or reports 23034MiB rather than
+100MiB, the session is running an older image than the branch expects.
 
 ## Trying it without deploying
 
@@ -88,37 +103,42 @@ reproduce the Open OnDemand wrapper — no login, no scheduler outside the
 container.
 
 ```bash
-./run-local.sh --device rtxpro6000 --vram ""   # a different card, full size
-./run-local.sh --shell                         # a terminal instead of JupyterLab
+./run-local.sh --fleet 'l4,a100:full'   # an L4 and a full-size A100
+./run-local.sh --shell                   # a terminal instead of JupyterLab
 ```
 
 ## Timing
 
 | Chapter | Time | Notes |
 |---|---|---|
-| 1. Getting a GPU job running | 30 min | Two scripts. Most of the audience will know some of this |
-| 2. Asking for the right resources | 45 min | The longest chapter. `scan-cpus.sh` submits 3 jobs, ~2 min; the OOM demo always generates questions |
-| 3. Watching with nvtop | 25 min | `watch-me.sl` runs 8 minutes; start it before you explain the display |
-| 4. Reading seff | 25 min | Reads the jobs from chapters 1 and 2, so no waiting |
-| 5. Precision | 25 min | The RTX PRO 6000 comparison is the memorable part |
-| 6. Choosing a GPU | 25 min | The three-researcher exercise works well in pairs |
+| **Stage 1 — Writing your submit script** | | Read rather than run: there is no job yet |
+| 1. The submit script | 20 min | The annotated skeleton. Most of the audience will know some of this |
+| 2. Which GPU | 40 min | The longest chapter. The flow diagram and the memory ladder are the heart of it |
+| 3. How many CPUs | 25 min | The two figures do the work here. The hypothesis table repays going slowly |
+| 4. How much memory | 20 min | CPU memory, not VRAM. Expect the confusion and name it early |
+| **Stage 2 — Measuring your GPU jobs** | | |
+| 5. Measuring your GPU jobs | 15 min | Short. Sets up the four questions the tools answer |
+| 6. The tools for measuring | 40 min | `test-job.sl` runs 3 minutes; submit it before you explain `seff` |
+| **Stage 3 — Putting it all together** | | |
+| 7. Putting it all together | 40 min | Three passes over one job. The recorded jobs mean no waiting |
 | S1 / S2 | — | Supplementary. Point at them rather than working through |
 
-Roughly three hours. The material assumes most of the audience has run a Slurm
-job before; chapter 1 moves quickly and only the confirmation step is likely to
-be new.
+Roughly three and a half hours. The material assumes most of the audience has
+run a Slurm job before; chapter 1 moves quickly and only the GPU lines are
+likely to be new.
 
 !!! note "Things worth saying out loud"
 
     - **At the start:** there is no GPU here, and no timing in this environment
       means anything. Say it once clearly and it will not come up again.
-    - **Chapter 3:** start `watch-me.sl` before you explain `nvtop`, so there
-      is something to look at when you get there.
     - **Chapter 2:** the most common question is "so how do I ask for more
       VRAM?" The answer — you cannot, you choose a card — is the point of the
-      chapter.
-    - **Chapter 5:** the RTX PRO 6000 being both the best fp32 card and nearly
-      the worst fp64 card is the thing people remember. Spend time on it.
+      chapter. The RTX PRO 6000 being both the best fp32 card and nearly the
+      worst fp64 card is the thing people remember; spend time on it.
+    - **Chapter 6:** submit `test-job.sl` before you explain the tools, so
+      there is a finished job to read when you get there.
+    - **Chapter 7:** the ten jobs it compares were run in advance. Say so —
+      otherwise someone will wonder why their `squeue` is empty.
 
 ## Keeping the material in step
 
@@ -139,7 +159,7 @@ The emulator is honest about what it cannot do:
 | Diagnosing a starved GPU | Multi-GPU scaling, NCCL |
 | Structuring a GPU batch job | Custom CUDA extensions, Triton, `torch.compile` |
 
-Chapter 5's precision figures are published specifications shown in a table,
+Chapter 2's precision figures are published specifications shown in a table,
 not measurements — the environment cannot demonstrate the speed difference, so
-the chapter demonstrates the *accuracy* difference, which is real, and gives
-the speed ratios as documentation.
+the chapter gives the speed ratios as documentation and leaves the *accuracy*
+difference, which is real, to the supplementary material.

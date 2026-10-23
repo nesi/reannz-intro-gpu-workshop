@@ -14,7 +14,7 @@
     - How do I find out whether my software can use one?
     - How much faster can a GPU make my job?
 
-## The one-sentence version
+## Introduction
 
 A CPU has a small number of powerful cores that can each do something
 different. A GPU has thousands of weak cores that all have to do **the same

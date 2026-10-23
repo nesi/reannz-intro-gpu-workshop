@@ -100,8 +100,10 @@ same software working on an A100 and failing on the RTX PRO 6000 is almost
 always this.**
 
 The node matters too. `nvidia-smi` shows, top right, the newest CUDA version
-its driver supports. A build made for a newer CUDA than that fails with
-`CUDA driver version is insufficient for CUDA runtime version`.
+its driver supports. A build made for a newer major version of CUDA than that
+fails with `CUDA driver version is insufficient for CUDA runtime version`.
+Within one major version a newer build still runs: the cluster's PyTorch
+module, built for CUDA 13.2, runs on a driver that shows 13.0.
 
 ## Test it in an interactive session
 

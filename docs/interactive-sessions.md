@@ -244,10 +244,10 @@ as many times as you like, seconds apart.
 
         Now compare the last line each one printed:
 
-        | | Tried to allocate | Already allocated | Free |
+        | | Tried to allocate | This process had | Free |
         |---|---|---|---|
-        | `crash_one.py` | 1.1 GiB | 21.4 GiB | 620 MiB |
-        | `crash_two.py` | 2.7 GiB | 21.6 GiB | 389 MiB |
+        | `crash_one.py` | 1.1 GiB | 21.9 GiB | 100 MiB |
+        | `crash_two.py` | 2.7 GiB | 21.9 GiB | 89 MiB |
 
         Almost identical. Both died asking for a little more, on a card that
         was already full. **The error tells you where a job died, not how it
@@ -297,7 +297,7 @@ into a batch script, like the test script from
 
         ```
         Peak GPU Utilisation:   0%
-        Peak GPU Memory Util:  98%  23.60 GB of 24 GB
+        Peak GPU Memory Util:  95%  21.89 GB of 23 GB
         ```
 
         The memory line is `crash_two.py` filling the card. The utilisation

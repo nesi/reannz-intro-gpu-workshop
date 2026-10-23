@@ -129,7 +129,7 @@ Job Wall-time:        100%  00:15:04 of 00:15:00 time limit
 Avg CPU Utilisation:   98%  00:59:20 of 01:00:16 core-walltime
 Peak Mem Utilisation:   1%  284.46 MB of 32.00 GB
 Peak GPU Utilisation:  43%
-Peak GPU Memory Util:   2%  510.00 MB of 24 GB
+Peak GPU Memory Util:   2%  510.00 MB of 23 GB
 ```
 
 Read it against the decisions you made:
@@ -217,7 +217,7 @@ The files for this chapter are in `~/gpu-training/measuring`, and
         Avg CPU Utilisation:   67%  00:04:05 of 00:06:07 core-walltime
         Peak Mem Utilisation:  13%  522.78 MB of 4.00 GB
         Peak GPU Utilisation:  65%
-        Peak GPU Memory Util:   2%  586.00 MB of 24 GB
+        Peak GPU Memory Util:   3%  648.00 MB of 23 GB
         ```
 
         The job used three of its fifteen minutes, and about two thirds of
@@ -225,8 +225,9 @@ The files for this chapter are in `~/gpu-training/measuring`, and
         that number comes from: the GPU panel is a sawtooth, high for twenty
         seconds and idle for ten. That shape is what an average hides.
 
-        The GPU memory is the 64 MB the script holds, plus the few hundred MB
-        that CUDA itself takes in any job that uses the GPU.
+        The GPU memory is more than the 64 MB the script holds: PyTorch keeps
+        memory it has finished with for reuse, and CUDA itself takes a few
+        hundred MB in any job that uses the GPU.
 
 !!! graduation-cap "Keypoints"
 

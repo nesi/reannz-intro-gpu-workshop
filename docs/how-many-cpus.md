@@ -185,9 +185,9 @@ being any busier. **The GPU column is the one to trust.**
 
         | Cores | CPU efficiency | GPU utilisation |
         |---|---|---|
-        | 1 | 99% | 26% |
-        | 2 | 85% | 39% |
-        | 4 | 68% | 45% |
+        | 1 | 99% | 25% |
+        | 2 | 84% | 39% |
+        | 4 | 67% | 48% |
 
         The same shape as the start of the table above: GPU utilisation
         climbs with every core added, while CPU efficiency falls. At four

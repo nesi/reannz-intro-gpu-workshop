@@ -99,10 +99,6 @@ card is too big for it. In order of what to try:
    (`#SBATCH --array=1-100`) runs one job per piece. Each still holds a whole
    GPU, so make each piece worth one — or combine this with 2.
 
-Some clusters can also split an A100 into several smaller GPUs, called MIG
-slices. If your jobs are too small for any card, ask the support team whether
-that is available for your work.
-
 !!! graduation-cap "Keypoints"
 
     - A second GPU helps **only if your software splits the work**. Most does

@@ -115,7 +115,7 @@ for `a100:1` with `--constraint a100_40gb` or `a100_80gb`.
         Avg CPU Utilisation:   55%  00:01:45 of 00:03:12 core-walltime
         Peak Mem Utilisation:  19%  6.20 GB of 32.00 GB
         Peak GPU Utilisation:  31%
-        Peak GPU Memory Util:  98%  23.64 GB of 24 GB
+        Peak GPU Memory Util:  95%  21.86 GB of 23 GB
         ```
 
     === "A100 40 GB"
@@ -189,7 +189,7 @@ for `a100:1` with `--constraint a100_40gb` or `a100_80gb`.
 
         | Card | State | GPU memory used | Fits? |
         |---|---|---|---|
-        | L4 (24 GB) | `FAILED` | 23.6 GB of 24 GB — 98% | **No** |
+        | L4 (24 GB) | `FAILED` | 21.9 GB of 23 GB — 95% | **No** |
         | A100 (40 GB) | `COMPLETED` | 30.1 GB of 40 GB — 75% | **Yes** |
         | A100 (80 GB) | `COMPLETED` | 30.1 GB of 80 GB — 38% | Yes |
         | H100 (94 GB) | `COMPLETED` | 30.1 GB of 94 GB — 32% | Yes |
@@ -199,8 +199,11 @@ for `a100:1` with `--constraint a100_40gb` or `a100_80gb`.
         enough — and its output file will say so:
 
         ```
-        CUDA out of memory. Tried to allocate 512.00 MiB (GPU 0; 24564 MiB
-        total capacity; 23890 MiB already allocated; 118 MiB free).
+        torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 512.00 MiB.
+        GPU 0 has a total capacity of 21.97 GiB of which 118.00 MiB is free.
+        Including non-PyTorch memory, this process has 21.86 GiB memory in use.
+        Of the allocated memory 21.24 GiB is allocated by PyTorch, and
+        310.00 MiB is reserved by PyTorch but unallocated. ...
         ```
 
         **The answer is the 40 GB A100**: `--gpus-per-node a100:1` with

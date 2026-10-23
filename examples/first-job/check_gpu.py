@@ -80,8 +80,8 @@ except ImportError:
 # These two lines together tell you whether you have a GPU-capable build at
 # all, before anything about whether a GPU is present:
 #
-#   2.14.0+cu124  / cuda 12.4   a CUDA build. It can use a GPU
-#   2.14.0+cpu    / cuda None   a CPU-only build. It never will
+#   2.13.0        / cuda 13.2   a CUDA build. It can use a GPU
+#   2.13.0+cpu    / cuda None   a CPU-only build. It never will
 #
 # A CPU-only build is the most common reason a job that was given a GPU
 # quietly runs without one, and it is invisible unless you look here.

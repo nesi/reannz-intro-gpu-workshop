@@ -68,22 +68,29 @@ When a job asks for more than the card has, it stops with an error worth
 learning to read, because the useful part is not the part people look at:
 
 ```
-CUDA out of memory. Tried to allocate 64.00 MiB (GPU 0; 23034 MiB total
-capacity; 22050 MiB already allocated; 512 MiB free).
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 64.00 MiB. GPU 0
+has a total capacity of 21.97 GiB of which 42.00 MiB is free. Including
+non-PyTorch memory, this process has 21.93 GiB memory in use. Of the allocated
+memory 21.62 GiB is allocated by PyTorch, and 20.00 MiB is reserved by PyTorch
+but unallocated. If reserved but unallocated memory is large try setting
+PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See
+documentation for Memory Management
+(https://docs.pytorch.org/docs/stable/notes/cuda.html#optimizing-memory-usage-with-pytorch-cuda-alloc-conf)
 ```
 
 | Phrase | Means |
 |---|---|
 | `Tried to allocate` | The allocation that failed — often small |
 | `total capacity` | What the card has |
-| `already allocated` | What **your process** was holding |
 | `free` | What was left |
+| `this process has` | What **your process** was holding, CUDA's own share included |
+| `allocated by PyTorch` | How much of that is your program's data |
 
 !!! note "The failed allocation is usually small"
 
     People see "Tried to allocate 64 MiB" and assume something strange has
-    happened, because 64 MiB is nothing. The card was already 96% full; 64 MiB
-    was the straw. **The number that matters is `already allocated`.**
+    happened, because 64 MiB is nothing. The card was all but full; 64 MiB was
+    the straw. **The number that matters is what `this process has`.**
 
 ### What to do when it does not fit
 
@@ -122,7 +129,7 @@ The files for this chapter are in `~/gpu-training/gpu-memory`, and
     2. In the table, how much memory would a 1 billion parameter model need
        to train in fp32?
     3. At the end, find the out-of-memory error. How much did it try to
-       allocate, and how much was already allocated?
+       allocate, and how much did the process already have?
 
     ??? "What you should see"
 
@@ -133,8 +140,11 @@ The files for this chapter are in `~/gpu-training/gpu-memory`, and
         3. The card filled about 1.4 GB at a time, then:
 
             ```
-            CUDA out of memory. Tried to allocate 1.41 GiB (GPU 0; 21.97 GiB
-            total capacity; 21.08 GiB already allocated; 916.00 MiB free).
+            CUDA out of memory. Tried to allocate 1.41 GiB. GPU 0 has a total
+            capacity of 21.97 GiB of which 616.00 MiB is free. Including
+            non-PyTorch memory, this process has 21.37 GiB memory in use. Of
+            the allocated memory 21.08 GiB is allocated by PyTorch, and 0 bytes
+            is reserved by PyTorch but unallocated. ...
             ```
 
             An allocation small next to what the card already held — the
@@ -184,8 +194,8 @@ folder asks the same questions and prints a request: `python3 pick_a_gpu.py`.
       asked for, and two GPUs do not give you more.
     - Estimate on paper — about **four times the model** to train, plus the
       activations — then measure a short run.
-    - The useful number in an out-of-memory error is **`already allocated`**,
-      not "tried to allocate".
+    - The useful number in an out-of-memory error is what **this process
+      has**, not what it tried to allocate.
     - When a job runs out: **rule out a leak**, then a smaller batch or lower
       precision, then the next card up. `--mem` never helps.
     - Take the **smallest card that fits** — shorter queue, fairer share, same

@@ -76,7 +76,7 @@ Job Wall-time:          3%  00:00:31 of 00:20:00 time limit
 Avg CPU Utilisation:   99%  00:00:30 of 00:00:31 core-walltime
 Peak Mem Utilisation:   6%  243.67 MB of 4.00 GB
 Peak GPU Utilisation:  16%
-Peak GPU Memory Util:   2%  510.00 MB of 24 GB
+Peak GPU Memory Util:   2%  510.00 MB of 23 GB
 ```
 
 | Reading | Means | Do |

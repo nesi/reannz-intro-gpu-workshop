@@ -21,6 +21,8 @@ The second half of this script allocates larger and larger blocks until the
 GPU refuses, so you can see the error you will actually get.
 """
 
+import textwrap
+
 import torch
 
 if not torch.cuda.is_available():
@@ -73,13 +75,13 @@ except torch.cuda.OutOfMemoryError as exc:
     print()
     print("  Out of memory. This is the error, in full:")
     print()
-    for line in str(exc).splitlines():
-        print(f"    {line}")
+    print(textwrap.fill(str(exc), width=76, initial_indent="    ",
+                        subsequent_indent="    ", break_on_hyphens=False))
     print()
     print("  Learn to read it. The useful parts are:")
-    print("    'Tried to allocate'  - what your program wanted next")
-    print("    'capacity'           - what the card has in total")
-    print("    'already allocated'  - what you were holding at the time")
+    print("    'Tried to allocate'     - what your program wanted next")
+    print("    'total capacity'        - what the card has in total")
+    print("    'allocated by PyTorch'  - what you were holding at the time")
     print()
     print("  What to do about it, in the order worth trying:")
     print("    1. Use a smaller batch size. Halving the batch usually halves")

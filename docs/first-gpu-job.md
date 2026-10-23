@@ -126,8 +126,8 @@ The files for this chapter are in `~/gpu-training/first-job`, and
         followed by a table from `nvidia-smi`, with one card in it:
 
         ```
-        |   0  NVIDIA L4                      On  |   00000000:00:04.0 Off |                    0 |
-        | N/A   38C    P8             12W /  72W  |       1MiB /  23034MiB |      0%      Default |
+        |   0  NVIDIA L4                      Off |   00000000:01:00.0 Off |                    0 |
+        | N/A   38C    P0             16W /   72W |       0MiB /  23034MiB |      0%      Default |
         ```
 
         Two things to notice. `CUDA_VISIBLE_DEVICES` is `0`: Slurm gave the

@@ -29,7 +29,7 @@ import time
 
 import torch
 
-from gpuemu.phases import cpu_phase, gpu_phase, report
+from stages import cpu_phase, gpu_phase, report
 
 parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument("--rounds", type=int, default=5)
@@ -43,7 +43,11 @@ args = parser.parse_args()
 if not torch.cuda.is_available():
     raise SystemExit("No GPU visible. Add '#SBATCH --gpus-per-node l4:1'.")
 
-io_cost = 3.0 if args.heavy_io else 0.6
+io_cost = 1.2 if args.heavy_io else 0.6
+
+# The computation runs for a fixed time, so the split between the stages is
+# the same on any card.
+compute_seconds = 1.0
 
 print("A workflow in four stages. Watch which one dominates.\n")
 
@@ -65,10 +69,14 @@ for round_number in range(args.rounds):
     # ---- Stage 3: the actual computation. This is the GPU's part. -------
     # Big, regular, identical arithmetic over a lot of numbers at once -
     # exactly the shape a GPU is built for.
+    # The GPU runs its work in the background, so synchronize() waits for it
+    # to finish before the stage is counted as done.
     with gpu_phase("3. compute"):
         x = torch.randn(1024, 1024, device="cuda")
-        for _ in range(20):
+        end = time.monotonic() + compute_seconds
+        while time.monotonic() < end:
             x = torch.tanh(x @ weights)
+        torch.cuda.synchronize()
 
     # ---- Stage 4: write the results. I/O again. -------------------------
     with cpu_phase("4. write output"):

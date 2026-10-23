@@ -167,8 +167,8 @@ being any busier. **The GPU column is the one to trust.**
 
 !!! dumbbell "Optional exercise: measure the curve yourself"
 
-    The training session has four cores, enough for a small version of the
-    table above. The scripts are also [on GitHub](https://github.com/nesi/reannz-intro-gpu-workshop/tree/main/examples/cpus){: target="_blank" rel="noopener" }.
+    Measure a small version of the table above: the same job at one, two and
+    four cores. The scripts are also [on GitHub](https://github.com/nesi/reannz-intro-gpu-workshop/tree/main/examples/cpus){: target="_blank" rel="noopener" }.
 
     ```bash
     cd ~/gpu-training/cpus
@@ -177,7 +177,7 @@ being any busier. **The GPU column is the one to trust.**
     ./compare.sh
     ```
 
-    The three jobs take about twenty seconds between them.
+    The three jobs take about a minute between them.
 
     ??? "What you should see"
 
@@ -185,13 +185,14 @@ being any busier. **The GPU column is the one to trust.**
 
         | Cores | CPU efficiency | GPU utilisation |
         |---|---|---|
-        | 1 | 97% | 21% |
-        | 2 | 77% | 41% |
-        | 4 | 65% | 42% |
+        | 1 | 99% | 26% |
+        | 2 | 85% | 39% |
+        | 4 | 68% | 45% |
 
-        The same shape as the table above, only sooner: GPU utilisation
-        doubles from one core to two and then stops climbing, while CPU
-        efficiency falls the whole way. For this job, the answer is 2.
+        The same shape as the start of the table above: GPU utilisation
+        climbs with every core added, while CPU efficiency falls. At four
+        cores it is still climbing, if more slowly, so for this job you would
+        keep going — 8, 16 — until it stops.
 
 !!! graduation-cap "Keypoints"
 

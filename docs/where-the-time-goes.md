@@ -28,51 +28,50 @@ CPU side of it — reading data.
 
 ```bash
 cd ~/gpu-training/where-the-time-goes
-python3 profile_phases.py
+sbatch phases.sl
 ```
 
-The script runs a workload in four stages and reports where the time went:
-
-```
-Where the time went
-----------------------------------------------
-  CPU  1. read input              3.0s   28.5%
-  CPU  2. prepare                 0.2s    1.9%
-  GPU  3. compute                 4.3s   40.8%
-  CPU  4. write output            1.5s   14.2%
-                             ----------------
-       total                     10.5s  100.0%
-
-The GPU was busy for 41% of this run.
-A GPU 2x faster would cut 4.3s to 2.1s, saving 20% of the total runtime.
-```
-
-Now run the badly balanced version:
-
-```bash
-python3 profile_phases.py --heavy-io
-```
+The job runs a workload in four stages, twice, and reports where the time
+went. The first run, in `phases-<JobID>.out`, is reasonably balanced:
 
 ```
 Where the time went
 ----------------------------------------------
-  CPU  1. read input              6.0s   44.5%
-  CPU  2. prepare                 0.2s    1.3%
-  GPU  3. compute                 4.3s   31.9%
-  CPU  4. write output            3.0s   22.3%
+  CPU  1. read input             3.0s   30.9%
+  CPU  2. prepare                0.2s    2.0%
+  GPU  3. compute                5.1s   51.6%
+  CPU  4. write output           1.5s   15.5%
                              ----------------
-       total                     13.5s  100.0%
+       total                     9.8s  100.0%
 
-The GPU was busy for 32% of this run.
+The GPU was busy for 52% of this run.
+A GPU 2x faster would cut 5.1s to 2.5s, saving 26% of the total runtime.
+```
+
+The second is the same computation, reading and writing much more
+(`profile_phases.py --heavy-io`):
+
+```
+Where the time went
+----------------------------------------------
+  CPU  1. read input             6.0s   42.0%
+  CPU  2. prepare                0.2s    1.6%
+  GPU  3. compute                5.1s   35.3%
+  CPU  4. write output           3.0s   21.1%
+                             ----------------
+       total                    14.3s  100.0%
+
+The GPU was busy for 35% of this run.
+A GPU 2x faster would cut 5.1s to 2.5s, saving 18% of the total runtime.
 Most of this job is not on the GPU. Speeding up the part that is cannot
 help much - look at the CPU phases first.
 ```
 
-Same computation. Two thirds of the runtime is now reading and writing, and no
-GPU on earth will do anything about it.
+Nearly two thirds of the runtime is now reading and writing, and no GPU on
+earth will do anything about it.
 
-`phases.sl` runs both as a batch job, so you can compare the script's own
-figures with what `seff` reports from outside.
+Run `seff <JobID>` afterwards, to compare the script's own figures with what
+`seff` measures from outside.
 
 ## Timing your own code
 
@@ -101,15 +100,6 @@ about theirs. For non-Python software, the same thing:
 /usr/bin/time -v ./preprocess.sh
 /usr/bin/time -v ./simulate.sh
 ```
-
-!!! warning "Not in this environment"
-
-    The training environment has no GPU, so wall-clock times measured here are
-    meaningless as a guide to GPU performance. Do the timing exercise on the
-    real cluster with your own code.
-
-    What the exercise here teaches is the **method** and what to do with the
-    answer — and those do transfer.
 
 ## What to do with the answer
 

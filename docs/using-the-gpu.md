@@ -70,8 +70,8 @@ This is the one that matters, and the one people skip.
 
     | Output | Means |
     |---|---|
-    | `2.14.0+cu124  12.4` | A CUDA build. It can use a GPU |
-    | `2.14.0+cpu  None` | A CPU-only build. It never will, whatever Slurm gives it |
+    | `2.13.0  13.2` | A CUDA build. It can use a GPU |
+    | `2.13.0+cpu  None` | A CPU-only build. It never will, whatever Slurm gives it |
 
     A CPU-only build with a perfectly good GPU allocated is a software problem.
     No amount of fixing your Slurm script will help —
@@ -80,8 +80,8 @@ This is the one that matters, and the one people skip.
 
 ### Running these checks together
 
-The files for this chapter are in `~/gpu-training/first-job`, and also
-[on GitHub](https://github.com/nesi/reannz-intro-gpu-workshop/tree/main/examples/first-job){: target="_blank" rel="noopener" } to read outside the training environment.
+The files for this chapter are in `~/gpu-training/first-job`, and
+[on GitHub](https://github.com/nesi/reannz-intro-gpu-workshop/tree/main/examples/first-job){: target="_blank" rel="noopener" }.
 
 The exercise folder has a script that makes all three checks and prints them
 side by side:
@@ -109,8 +109,8 @@ You can see `check_gpu.py` [here](https://github.com/nesi/reannz-intro-gpu-works
 
 3. What your software reports (PyTorch)
 ---------------------------------------
-  torch version:         2.14.1+cu124
-  built against CUDA:    12.4
+  torch version:         2.13.0
+  built against CUDA:    13.2
   torch.cuda.is_available(): True
   device count:          1
   device name:           NVIDIA L4
@@ -213,8 +213,8 @@ seconds and tells you why — whatever software it runs.
 
         3. What your software reports (PyTorch)
         ---------------------------------------
-          torch version:         2.14.1+cu124
-          built against CUDA:    12.4
+          torch version:         2.13.0
+          built against CUDA:    13.2
           torch.cuda.is_available(): False
 
           PyTorch found no GPU because this job was not given one.
@@ -223,11 +223,12 @@ seconds and tells you why — whatever software it runs.
         ```
 
         Note what section 3 does **not** say. PyTorch is still a CUDA build —
-        `+cu124` — it simply has no device. Nothing is wrong with the software.
+        built against CUDA 13.2 — it simply has no device. Nothing is wrong
+        with the software.
 
-        Had the version said `+cpu` and `built against CUDA: None` while
-        section 1 showed a GPU, the diagnosis would be the opposite, and the
-        fix would have nothing to do with Slurm.
+        Had it said `built against CUDA: None` while section 1 showed a GPU,
+        the diagnosis would be the opposite, and the fix would have nothing to
+        do with Slurm.
 
     ??? "What you should see at step 4"
 

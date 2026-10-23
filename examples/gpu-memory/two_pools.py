@@ -28,9 +28,9 @@ import torch
 
 def vram_used_mb():
     """What the driver says is allocated on the GPU right now."""
-    # The emulator republishes device state a few times a second, so read it
-    # after a short pause rather than the instant an allocation returns.
-    # Otherwise the number you print is the one from just before you allocated.
+    # nvidia-smi's figure can trail an allocation by a moment, so read it after
+    # a short pause rather than the instant the allocation returns. Otherwise
+    # the number you print is the one from just before you allocated.
     time.sleep(0.5)
     out = subprocess.run(
         ["nvidia-smi", "--query-gpu=memory.used", "--format=csv,noheader,nounits"],
@@ -67,8 +67,7 @@ print(f"{'at the start':<34}{host_ram_mb():>12}{vram_used_mb():>12}")
 # A numpy-style host array. The GPU knows nothing about this.
 #
 # Sized to fit the card, because the whole point of the script is to move it
-# there afterwards. The emulated cards are deliberately small, so a fixed
-# block big enough to be interesting on a real board would simply fail here.
+# there afterwards: 32 MB, or less on a very small card.
 BLOCK_MB = max(8, min(32, int(total_vram_mb / 3)))
 host_block = torch.zeros(BLOCK_MB * 262144, dtype=torch.float32)
 print(f"{f'after {BLOCK_MB} MB in RAM':<34}{host_ram_mb():>12}{vram_used_mb():>12}")

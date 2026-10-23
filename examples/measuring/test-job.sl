@@ -35,4 +35,7 @@
 # averaging 40% might have held a steady 40% or alternated between 100% and
 # 0%, and only the plot tells you which.
 
+module purge
+module load PyTorch/2.13.0-foss-2026-Python-3.14.4-CUDA-13.2.1
+
 python3 ../putting-it-together/sawtooth.py --minutes 3

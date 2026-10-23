@@ -97,8 +97,8 @@ did not help".
 
 ## Run one
 
-The files for this chapter are in `~/gpu-training/first-job`, and also
-[on GitHub](https://github.com/nesi/reannz-intro-gpu-workshop/tree/main/examples/first-job){: target="_blank" rel="noopener" } to read outside the training environment.
+The files for this chapter are in `~/gpu-training/first-job`, and
+[on GitHub](https://github.com/nesi/reannz-intro-gpu-workshop/tree/main/examples/first-job){: target="_blank" rel="noopener" }.
 
 !!! dumbbell "Exercise: your first GPU job"
 
@@ -119,7 +119,7 @@ The files for this chapter are in `~/gpu-training/first-job`, and also
     ??? "What you should see"
 
         ```
-        Job 1000 is running on gpunode001
+        Job 1234567 is running on g09
         Slurm gave this job GPU number: '0'
         ```
 
@@ -127,7 +127,7 @@ The files for this chapter are in `~/gpu-training/first-job`, and also
 
         ```
         |   0  NVIDIA L4                      On  |   00000000:00:04.0 Off |                    0 |
-        | N/A   38C    P8             12W /  72W  |       1MiB /    200MiB |      0%      Default |
+        | N/A   38C    P8             12W /  72W  |       1MiB /  23034MiB |      0%      Default |
         ```
 
         Two things to notice. `CUDA_VISIBLE_DEVICES` is `0`: Slurm gave the

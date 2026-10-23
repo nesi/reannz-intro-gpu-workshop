@@ -171,8 +171,8 @@ this:
 
 ## Try it
 
-The files for this chapter are in `~/gpu-training/measuring`, and also
-[on GitHub](https://github.com/nesi/reannz-intro-gpu-workshop/tree/main/examples/measuring){: target="_blank" rel="noopener" } to read outside the training environment.
+The files for this chapter are in `~/gpu-training/measuring`, and
+[on GitHub](https://github.com/nesi/reannz-intro-gpu-workshop/tree/main/examples/measuring){: target="_blank" rel="noopener" }.
 
 !!! dumbbell "Exercise: a test job, measured"
 
@@ -201,7 +201,7 @@ The files for this chapter are in `~/gpu-training/measuring`, and also
     profile_plot <JobID>
     ```
 
-    Open `<JobID>_profile.png` from the JupyterLab file browser.
+    Then open the `<JobID>_profile.png` it writes.
 
     ??? "What you should see"
 
@@ -209,7 +209,7 @@ The files for this chapter are in `~/gpu-training/measuring`, and also
         seconds of work, ten seconds of waiting. Then `seff`:
 
         ```
-        Job ID: 1006
+        Job ID: 1234567
         State: COMPLETED
         Tasks: 1
         Cores: 2
@@ -217,13 +217,16 @@ The files for this chapter are in `~/gpu-training/measuring`, and also
         Avg CPU Utilisation:   67%  00:04:05 of 00:06:07 core-walltime
         Peak Mem Utilisation:  13%  522.78 MB of 4.00 GB
         Peak GPU Utilisation:  65%
-        Peak GPU Memory Util:  32%  65.00 MB of 200 MB
+        Peak GPU Memory Util:   2%  586.00 MB of 24 GB
         ```
 
         The job used three of its fifteen minutes, and about two thirds of
         the GPU — which `seff` reports as a single 65%. The plot shows where
         that number comes from: the GPU panel is a sawtooth, high for twenty
         seconds and idle for ten. That shape is what an average hides.
+
+        The GPU memory is the 64 MB the script holds, plus the few hundred MB
+        that CUDA itself takes in any job that uses the GPU.
 
 !!! graduation-cap "Keypoints"
 

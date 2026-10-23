@@ -95,32 +95,26 @@ cluster](R2-gpu-reference.md).
     [Submitting your first job](https://docs.nesi.org.nz/Tutorials/Introduction_To_HPC/Submitting_Your_First_Job/)
     tutorial is the place to start. No GPU experience is assumed.
 
-    Everything is done from a **terminal**. In JupyterLab, open one with
-    **File → New → Terminal**, then:
+    Everything is done from a **terminal** on Mahuika, in OnDemand or over
+    `ssh`. The exercise files live in `~/gpu-training`. If you do not have
+    them yet, copy them from the workshop's repository:
 
     ```bash
+    git clone https://github.com/nesi/reannz-intro-gpu-workshop.git
+    cp -r reannz-intro-gpu-workshop/examples ~/gpu-training
     cd ~/gpu-training
     ls
     ```
 
-    The same files are [on GitHub](https://github.com/nesi/reannz-intro-gpu-workshop/tree/main/examples){: target="_blank" rel="noopener" }, to read outside the training
-    environment.
+    You can also read them [on GitHub](https://github.com/nesi/reannz-intro-gpu-workshop/tree/main/examples){: target="_blank" rel="noopener" }.
 
-!!! warning "About the training environment"
+    The exercises use PyTorch from the cluster's modules. The job scripts load
+    it themselves. To run Python in a terminal of your own, load it there
+    first:
 
-    The machines used for this workshop **have no GPUs**. The session emulates
-    one, so the tools behave exactly as they do on the cluster: `nvidia-smi`,
-    `nvtop`, `seff` and `sbatch` all show real utilisation, real memory and
-    real job accounting.
-
-    The arithmetic runs on the CPU. **No timing you measure here says anything
-    about GPU performance**, and nothing in this workshop asks you to time
-    anything. Everything you learn about *reading* these tools transfers
-    unchanged. Nothing you learn about speed does.
-
-    The node has one of every card on Mahuika, and each reports **200 MB of
-    GPU memory** rather than the 24 to 96 GB a real one has, so running out of
-    memory takes seconds rather than filling a real card.
+    ```bash
+    module load PyTorch/2.13.0-foss-2026-Python-3.14.4-CUDA-13.2.1
+    ```
 
 - - -
 
@@ -131,5 +125,3 @@ cluster](R2-gpu-reference.md).
       [Hardware](https://docs.nesi.org.nz/Batch_Computing/Hardware/).
     * `seff` and `svisit` are documented as they behave in
       [nesi/opt-nesi-bin](https://github.com/nesi/opt-nesi-bin).
-    * The training environment is
-      [training-environment-jupyter-gpu-app](https://github.com/nesi/training-environment-jupyter-gpu-app).

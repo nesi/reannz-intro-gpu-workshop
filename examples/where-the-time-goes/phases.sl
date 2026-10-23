@@ -15,6 +15,9 @@
 # script measures it from inside. Agreeing with each other is what makes both
 # of them worth trusting.
 
+module purge
+module load PyTorch/2.13.0-foss-2026-Python-3.14.4-CUDA-13.2.1
+
 echo "=== A reasonably balanced workflow ==="
 python3 profile_phases.py
 

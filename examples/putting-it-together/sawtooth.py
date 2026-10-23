@@ -25,7 +25,7 @@ import time
 
 import torch
 
-from gpuemu.phases import cpu_phase, gpu_phase, report
+from stages import cpu_phase, gpu_phase, report
 
 parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument("--minutes", type=float, default=4.0, help="how long to run")
@@ -58,6 +58,7 @@ while time.time() < deadline:
         while time.time() < end:
             held = held @ held.T
             held /= held.norm()
+        torch.cuda.synchronize()    # wait for the queued GPU work to finish
 
     print(f"[{time.strftime('%H:%M:%S')}] cycle {cycle}: GPU IDLE for {args.idle:.0f}s "
           "(memory stays allocated)")

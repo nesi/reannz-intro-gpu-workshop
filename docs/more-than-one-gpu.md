@@ -2,8 +2,7 @@
 
 !!! circle-info "Beyond the basics"
 
-    Not covered in the live workshop. The training environment cannot show how
-    a job scales across GPUs, so this page is for reading.
+    Not covered in the live workshop.
 
 !!! clipboard-list "Lesson Objectives"
 

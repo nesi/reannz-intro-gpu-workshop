@@ -1,24 +1,20 @@
 #!/usr/bin/env python3
-"""Real CUDA kernels, really executed - just not on a GPU.
+"""Two real CUDA kernels, written in Python with Numba.
 
-Numba ships a CUDA simulator that runs ``@cuda.jit`` kernels in the Python
-interpreter, with each thread as a real Python thread. It is slow, and it is
-also completely faithful to the programming model: ``threadIdx``, ``blockIdx``,
-grid-stride loops, shared memory, ``syncthreads`` and race conditions all behave
-as they would on hardware.
+Run it in a GPU job, with Numba installed, and the kernels run on the card:
+one thread per element for a vector add, then a reduction that shares memory
+between the threads of a block.
 
-That makes it the one part of this environment where learners write GPU code and
-get genuinely correct GPU semantics back, including the bugs. A missing
-``syncthreads`` produces a wrong answer here for the same reason it would on an
-L4.
-
-The image sets NUMBA_ENABLE_CUDASIM=1, so this runs as-is.
+Numba also ships a CUDA simulator, switched on with NUMBA_ENABLE_CUDASIM=1, that
+runs the same kernels in the Python interpreter. It is slow, and completely
+faithful to the programming model - ``threadIdx``, ``blockIdx``, shared memory,
+``syncthreads`` and race conditions all behave as they do on hardware.
 """
 
 from __future__ import annotations
 
 import numpy as np
-from numba import cuda
+from numba import config, cuda
 
 
 @cuda.jit
@@ -62,7 +58,9 @@ def row_sums_shared(matrix, out):
 
 def main() -> int:
     print(f"CUDA available to numba: {cuda.is_available()}")
-    print("(running under the CUDA simulator - correct semantics, no hardware)\n")
+    if config.ENABLE_CUDASIM:
+        print("(running under Numba's CUDA simulator)")
+    print()
 
     # -- vector add ---------------------------------------------------
     n = 1024
@@ -95,8 +93,8 @@ def main() -> int:
     print(f"row_sums_shared: {rows} blocks, shared-memory reduction -> correct")
 
     print("\nTry breaking it: delete one of the syncthreads() calls in")
-    print("row_sums_shared and run again. The simulator will give you the")
-    print("same wrong answers a real GPU would.")
+    print("row_sums_shared and run again. A GPU and the simulator give the")
+    print("same wrong answers, for the same reason.")
     return 0
 
 

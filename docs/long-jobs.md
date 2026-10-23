@@ -95,8 +95,7 @@ run, and a chain can run for longer than 21 days.
 | `QOSMaxGRESPerUser` | You already hold as many GPUs as one person may at a time | Wait for one of your own jobs to finish |
 | `Dependency` | It is waiting for another job, as above | Nothing; that is what you asked for |
 
-On the cluster, `squeue --me --start` shows when Slurm expects a pending job to
-start.
+`squeue --me --start` shows when Slurm expects a pending job to start.
 
 Each user may hold **6 GPUs at once**, and **14 GPU-days' worth of running
 jobs** — whichever comes first. The
@@ -112,31 +111,6 @@ full list.
   a gap of a day.
 - **Only what you use.** Spare cores and memory make a job harder to place, for
   no benefit.
-
-!!! dumbbell "Optional exercise: watch a job wait"
-
-    The training node has one L4, so two jobs that both want it cannot run at
-    once. The two scripts are [`hold-gpu.sl`](https://github.com/nesi/reannz-intro-gpu-workshop/blob/main/examples/interactive/hold-gpu.sl){: target="_blank" rel="noopener" } and
-    [`hello-gpu.sl`](https://github.com/nesi/reannz-intro-gpu-workshop/blob/main/examples/first-job/hello-gpu.sl){: target="_blank" rel="noopener" }:
-
-    ```bash
-    cd ~/gpu-training/interactive
-    sbatch hold-gpu.sl
-    cd ../first-job
-    sbatch hello-gpu.sl
-    squeue --me
-    ```
-
-    ??? "What you should see"
-
-        ```
-                     JOBID PARTITION     NAME     USER ST       TIME NODES NODELIST(REASON)
-                      1007       gpu hold-gpu     user  R    0:00:04     1 gpunode001
-                      1008       gpu hello-gp     user PD    0:00:00     1 (Resources)
-        ```
-
-        The second job is pending with `Resources`: it is next in line, and
-        waiting for the L4. `scancel` the holding job, and it starts at once.
 
 !!! graduation-cap "Keypoints"
 

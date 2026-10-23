@@ -34,8 +34,6 @@ nav:
   - Reference:
     - "R1: Command Reference": R1-command-reference.md
     - "R2: The GPUs on this Cluster": R2-gpu-reference.md
-  - Setup (for Trainers):
-    - setup-gpu-workshop.md
 
 theme:
   name: material
@@ -148,6 +146,8 @@ plugins:
         07-putting-it-together.md: putting-it-together.md
         S1-what-a-gpu-is.md: introduction.md
         S2-splitting-the-work.md: where-the-time-goes.md
+        # The trainers' guide lives with the environment it describes.
+        setup-gpu-workshop.md: https://github.com/nesi/training-environment-jupyter-gpu-app
 
 extra_javascript:
   - javascripts/mathjax.js

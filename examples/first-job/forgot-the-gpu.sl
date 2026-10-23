@@ -16,10 +16,10 @@
 # and starts it - sooner than the GPU job, in fact, because any node will take
 # a job that needs no GPU. Then it runs without one.
 #
-# On a real cluster this is how people lose a week. Most software does not
-# stop when it cannot find a GPU; it quietly carries on using the CPU, thirty
-# times slower, and nothing in the output says why. The two clues are below:
-# an empty CUDA_VISIBLE_DEVICES, and an nvidia-smi that finds nothing.
+# This is how people lose a week. Most software does not stop when it cannot
+# find a GPU; it quietly carries on using the CPU, thirty times slower, and
+# nothing in the output says why. The two clues are below: an empty
+# CUDA_VISIBLE_DEVICES, and an nvidia-smi that finds nothing.
 #
 # Afterwards, run 'seff' on this job and on the hello-gpu one. This job has no
 # GPU lines at all. That absence is how you tell, weeks later, which of your

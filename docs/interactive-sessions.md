@@ -123,13 +123,10 @@ like: run your program in one, and watch it with `nvtop` in another.
     waits does not notice. The price is that it does not notice you leaving
     either: **`exit` is not `scancel`.**
 
-    The training environment has no `srun --pty` or `salloc`, so this workshop
-    uses a job that waits — which works the same way here as on the cluster.
-
 ## Getting a session
 
-The files for this chapter are in `~/gpu-training/interactive`, and also
-[on GitHub](https://github.com/nesi/reannz-intro-gpu-workshop/tree/main/examples/interactive){: target="_blank" rel="noopener" } to read outside the training environment.
+The files for this chapter are in `~/gpu-training/interactive`, and
+[on GitHub](https://github.com/nesi/reannz-intro-gpu-workshop/tree/main/examples/interactive){: target="_blank" rel="noopener" }.
 
 !!! dumbbell "Exercise 1: hold a GPU and step inside it"
 
@@ -138,7 +135,6 @@ The files for this chapter are in `~/gpu-training/interactive`, and also
     ```bash
     cd ~/gpu-training/interactive
     echo "CUDA_VISIBLE_DEVICES=${CUDA_VISIBLE_DEVICES}"
-    nvidia-smi -L
     ```
 
     **Ask for a GPU, and wait for the job to start.**
@@ -156,6 +152,7 @@ The files for this chapter are in `~/gpu-training/interactive`, and also
     svisit <JobID>
     echo "CUDA_VISIBLE_DEVICES=${CUDA_VISIBLE_DEVICES}"
     nvidia-smi -L
+    module load PyTorch/2.13.0-foss-2026-Python-3.14.4-CUDA-13.2.1
     python3 -c "import torch; print(torch.cuda.is_available())"
     ```
 
@@ -164,24 +161,15 @@ The files for this chapter are in `~/gpu-training/interactive`, and also
     ??? "What you should see"
 
         **Outside the job**, `CUDA_VISIBLE_DEVICES` prints nothing: you are not
-        inside a job, so Slurm has given you no GPU. `nvidia-smi -L` lists all
-        five cards on this training node anyway — see the warning below.
+        inside a job, so Slurm has given you no GPU.
 
         **Inside it**, `CUDA_VISIBLE_DEVICES=0`, `nvidia-smi -L` lists a single
         card, the L4 your job asked for, and PyTorch prints `True`. That is
         what being inside a job means: **you see the GPU it was given, and
         nothing else.**
 
-        If `squeue` shows the job waiting as `PD` with `(Resources)`, something
-        of yours is still holding the L4 — most likely a job from an earlier
-        chapter. `scancel` it, or let it finish.
-
-!!! warning "In this training environment, your terminal sees the GPUs anyway"
-
-    The training environment is a single node, and your terminal is already on
-    it, so the cards are visible even outside a job. On Mahuika your terminal
-    is on a login node, and the GPUs are on compute nodes you can only reach
-    through a job. Do it the cluster's way here: get the job, then step inside.
+        If `squeue` shows the job as `PD`, it is still waiting for an L4. A
+        small debug job usually starts within a few minutes.
 
 ## Debugging in the session
 
@@ -204,16 +192,14 @@ as many times as you like, seconds apart.
 
 !!! dumbbell "Exercise 2: two crashes, watched live"
 
-    **Open a second terminal** with **File → New → Terminal**, and drag its tab
-    beside the first so that you can see both. In it, visit the same job,
-    straight into `nvtop`:
+    **Open a second terminal** on Mahuika, beside the first so that you can
+    see both. In it, visit the same job, straight into `nvtop`:
 
     ```bash
     svisit <JobID> nvtop
     ```
 
-    `nvtop` shows every card on this training node. Yours is **GPU 0, the
-    L4**.
+    `nvtop` shows your job's card, the L4.
 
     **In the first terminal**, still inside the job, run the first crash and
     watch the GPU memory graph:
@@ -260,8 +246,8 @@ as many times as you like, seconds apart.
 
         | | Tried to allocate | Already allocated | Free |
         |---|---|---|---|
-        | `crash_one.py` | 10 MiB | 190 MiB | 5 MiB |
-        | `crash_two.py` | 24 MiB | 192 MiB | 3 MiB |
+        | `crash_one.py` | 1.1 GiB | 21.4 GiB | 620 MiB |
+        | `crash_two.py` | 2.7 GiB | 21.6 GiB | 389 MiB |
 
         Almost identical. Both died asking for a little more, on a card that
         was already full. **The error tells you where a job died, not how it
@@ -311,7 +297,7 @@ into a batch script, like the test script from
 
         ```
         Peak GPU Utilisation:   0%
-        Peak GPU Memory Util:  96%  192.96 MB of 200 MB
+        Peak GPU Memory Util:  98%  23.60 GB of 24 GB
         ```
 
         The memory line is `crash_two.py` filling the card. The utilisation

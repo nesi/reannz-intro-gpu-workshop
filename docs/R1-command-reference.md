@@ -40,7 +40,7 @@ squeue --me                  # your jobs
 squeue --me -t R             # just the running ones
 squeue -j 12345              # one job
 squeue --me -h               # no header (-h is NOT --help here)
-squeue --me --start          # when pending jobs should start (not in the training environment)
+squeue --me --start          # when pending jobs should start
 ```
 
 `ST` column: `PD` pending, `R` running, `CG` completing. For a pending job, the
@@ -100,8 +100,8 @@ python -c "import torch; print(torch.cuda.is_available())"
 
 # PyTorch: is this even a GPU-capable build?
 python -c "import torch; print(torch.__version__, torch.version.cuda)"
-#   2.14.0+cu124  12.4   -> a CUDA build
-#   2.14.0+cpu    None   -> a CPU-only build; it will never use a GPU
+#   2.13.0        13.2   -> a CUDA build
+#   2.13.0+cpu    None   -> a CPU-only build; it will never use a GPU
 
 # TensorFlow
 python -c "import tensorflow as tf; print(tf.config.list_physical_devices('GPU'))"
@@ -178,7 +178,7 @@ Job Wall-time:          3%  00:00:31 of 00:20:00 time limit
 Avg CPU Utilisation:   99%  00:00:30 of 00:00:31 core-walltime
 Peak Mem Utilisation:   6%  243.67 MB of 4.00 GB
 Peak GPU Utilisation:  16%
-Peak GPU Memory Util:   4%  9.00 MB of 200 MB
+Peak GPU Memory Util:   2%  510.00 MB of 24 GB
 ```
 
 **No GPU lines means the job had no GPU.**
@@ -201,25 +201,3 @@ profile_plot 12345
 ```
 
 A graph of resource use over the job, rather than a single average.
-
-## Available in the training environment only
-
-These exist because the environment emulates a GPU.
-
-```bash
-gpuemu-ctl status            # is the emulator running?
-gpuemu-ctl start
-```
-
-```python
-from gpuemu.phases import cpu_phase, gpu_phase, report
-
-with cpu_phase("load"):
-    data = load()
-with gpu_phase("train"):
-    step(data)
-report()
-```
-
-Used by the exercises to show which stage of a script is which. On real
-hardware the driver knows this already, so nothing like it is needed.

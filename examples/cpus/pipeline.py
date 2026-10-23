@@ -11,7 +11,9 @@ only be as busy as the CPUs can keep it, and a GPU job with too few CPUs is a
 job that paid for a GPU and then starved it.
 
 The preparation here is real CPU work spread over however many cores the job
-was given, so the number of cores genuinely changes the answer:
+was given, so the number of cores genuinely changes the answer. The GPU's part
+is real GPU work, run for a fixed time per batch so that it costs the same on
+any card:
 
     python3 pipeline.py                 # uses $SLURM_CPUS_PER_TASK
     python3 pipeline.py --workers 1
@@ -22,10 +24,11 @@ import argparse
 import math
 import multiprocessing as mp
 import os
+import time
 
 import torch
 
-from gpuemu.phases import cpu_phase, gpu_phase, report
+from stages import cpu_phase, gpu_phase, report
 
 
 def prepare_one(seed):
@@ -51,6 +54,9 @@ def main():
     )
     parser.add_argument("--batches", type=int, default=10)
     parser.add_argument("--records", type=int, default=12, help="records per batch")
+    parser.add_argument(
+        "--gpu-seconds", type=float, default=0.1, help="GPU work per batch"
+    )
     args = parser.parse_args()
 
     if not torch.cuda.is_available():
@@ -58,11 +64,10 @@ def main():
             "No GPU visible to this process. Add '#SBATCH --gpus-per-node l4:1'."
         )
 
-    # On real hardware the GPU phase costs the same no matter how many CPU
-    # cores the job was given - the GPU does that work, and it does not care.
-    # In this environment the "GPU" arithmetic actually runs on the CPU, so
-    # without this line it would speed up with more cores too, and the exercise
-    # would not measure what it claims to measure.
+    # The GPU stage should cost the same however many CPU cores the job was
+    # given - the GPU does that work, and it does not care. Keeping torch's own
+    # CPU threads to one makes sure only the data preparation changes with
+    # --cpus-per-task, which is what the exercise measures.
     torch.set_num_threads(1)
 
     print(f"Preparing data on {args.workers} CPU worker(s)")
@@ -81,11 +86,14 @@ def main():
 
             # ---- GPU: do the actual computation ------------------------
             # This does not get faster with more CPUs. It cannot start until
-            # the phase above has finished.
+            # the phase above has finished. The GPU runs its work in the
+            # background, so synchronize() waits for it to finish.
             with gpu_phase("compute"):
                 x = torch.randn(1024, 1024, device="cuda")
-                for _ in range(4):
+                end = time.monotonic() + args.gpu_seconds
+                while time.monotonic() < end:
                     x = torch.tanh(x @ weights)
+                torch.cuda.synchronize()
 
             print(f"  batch {batch + 1}/{args.batches} done")
 

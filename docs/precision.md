@@ -46,13 +46,14 @@ GPUs, and how you ask for each of them, are below:
 
 !!! dumbbell "Optional exercise: ask for each A100"
 
-    The training node has both A100s, so you can watch the constraint choose
-    between them. `--wrap` runs a single command as a job, with no script:
+    Ask for each A100 in turn, and watch the constraint choose between them.
+    `--wrap` runs a single command as a job, with no script:
 
     ```bash
     cd ~/gpu-training/precision
-    sbatch --gpus-per-node a100:1 --constraint a100_40gb --wrap "nvidia-smi -L"
-    sbatch --gpus-per-node a100:1 --constraint a100_80gb --wrap "nvidia-smi -L"
+    query="nvidia-smi --query-gpu=name,memory.total --format=csv,noheader"
+    sbatch --gpus-per-node a100:1 --constraint a100_40gb --wrap "$query"
+    sbatch --gpus-per-node a100:1 --constraint a100_80gb --wrap "$query"
     ```
 
     Each job writes one line to its `slurm-<JobID>.out`.
@@ -60,14 +61,12 @@ GPUs, and how you ask for each of them, are below:
     ??? "What you should see"
 
         ```
-        GPU 1: NVIDIA A100-PCIE-40GB (UUID: GPU-e0000000-0000-4000-8000-000000000001)
-        GPU 2: NVIDIA A100-SXM4-80GB (UUID: GPU-e0000000-0000-4000-8000-000000000002)
+        NVIDIA A100-PCIE-40GB, 40960 MiB
+        NVIDIA A100-SXM4-80GB, 81920 MiB
         ```
 
-        Both jobs asked for `a100:1`, and one got the 40 GB card while the
-        other got the 80 GB. `sinfo -l` shows why: the node has two
-        `gpu:a100`, and the features `a100_40gb` and `a100_80gb` are what tell
-        them apart.
+        Both jobs asked for `a100:1`. The constraint is what decided that one
+        got the 40 GB card and the other the 80 GB.
 
 ## Two questions decide the card
 
@@ -190,14 +189,14 @@ between precisions do:
 
     ```bash
     cd ~/gpu-training/precision
+    module load PyTorch/2.13.0-foss-2026-Python-3.14.4-CUDA-13.2.1
     python3 accuracy.py
     python3 show_fleet.py
     ```
 
     [`accuracy.py`](https://github.com/nesi/reannz-intro-gpu-workshop/blob/main/examples/precision/accuracy.py){: target="_blank" rel="noopener" } shows fp32 losing accuracy in three ways you
-    can check by hand. That difference is real here. The *speed* difference is not, since
-    this environment has no GPU, so [`show_fleet.py`](https://github.com/nesi/reannz-intro-gpu-workshop/blob/main/examples/precision/show_fleet.py){: target="_blank" rel="noopener" } prints the
-    published figures side by side instead.
+    can check by hand, and [`show_fleet.py`](https://github.com/nesi/reannz-intro-gpu-workshop/blob/main/examples/precision/show_fleet.py){: target="_blank" rel="noopener" } prints the published speeds of
+    every card side by side.
 
 !!! graduation-cap "Keypoints"
 

@@ -13,6 +13,9 @@
 # and a GPU whose VRAM is whatever an L4 has. Those two numbers have nothing
 # to do with each other, which is the point of the first script.
 
+module purge
+module load PyTorch/2.13.0-foss-2026-Python-3.14.4-CUDA-13.2.1
+
 echo "=== Two separate pools ==="
 python3 two_pools.py
 

@@ -31,8 +31,8 @@ if not torch.cuda.is_available():
         "Run 'svisit <JOBID>' first, then try again."
     )
 
-# Every size is a fraction of the card, so the job behaves the same on the
-# training environment's 200 MB cards as it would on a real 24 GB L4.
+# Every size is a fraction of the card, so the job behaves the same way on
+# any GPU.
 card = torch.cuda.get_device_properties(0).total_memory
 width = int((card * 0.10 / 4) ** 0.5)      # a model a tenth of the card
 rows = int(card * 0.05 / 4 / width)        # each batch a twentieth of it

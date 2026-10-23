@@ -120,11 +120,10 @@ Ten minutes there saves a day of queueing jobs that fail at the first line.
 
 !!! note "If you write your own GPU code"
 
-    Writing GPU code is beyond this workshop, but the training environment can
-    run real CUDA kernels written with Numba, in a simulator:
-    `python3 ~/gpu-training/software/cuda_kernel.py`
-    ([on GitHub](https://github.com/nesi/reannz-intro-gpu-workshop/blob/main/examples/software/cuda_kernel.py){: target="_blank" rel="noopener" }). On the cluster, load a
-    CUDA module to compile your own code with `nvcc`.
+    Writing GPU code is beyond this workshop. If you want to see what it looks
+    like, [`cuda_kernel.py`](https://github.com/nesi/reannz-intro-gpu-workshop/blob/main/examples/software/cuda_kernel.py){: target="_blank" rel="noopener" }
+    has two small CUDA kernels written in Python with Numba. To compile CUDA
+    code of your own with `nvcc`, load a CUDA module first.
 
 !!! graduation-cap "Keypoints"
 

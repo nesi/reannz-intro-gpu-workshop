@@ -15,9 +15,8 @@
 # --cpus-per-task 2, which is also what the cluster documentation suggests.
 # Two is rarely badly wrong. One is often badly wrong.
 #
-# This scans 1, 2 and 4 because that is what your training session has. On the
-# cluster, where a GPU node has 64 or 168 cores, keep going - 8, 16 - until
-# the GPU utilisation stops climbing.
+# This scans 1, 2 and 4. A GPU node has 48 to 168 cores, so for your own job
+# keep going - 8, 16 - until the GPU utilisation stops climbing.
 
 set -e
 
@@ -26,11 +25,8 @@ for CPUS in 1 2 4; do
     JOBID=$(sbatch --parsable \
         --job-name "cpus-${CPUS}" \
         --cpus-per-task "${CPUS}" \
-        --mem 4GB \
-        --gpus-per-node l4:1 \
-        --time 00:20:00 \
         --output "cpus-${CPUS}-%j.out" \
-        --wrap "python3 pipeline.py --workers ${CPUS}")
+        pipeline.sl)
     echo "submitted ${JOBID} with ${CPUS} CPU(s)"
     JOBIDS+=("${JOBID}")
 done

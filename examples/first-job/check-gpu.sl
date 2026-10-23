@@ -13,4 +13,7 @@
 # out. The two output files side by side are the clearest picture you will get
 # of what "my job did not use the GPU" actually looks like.
 
+module purge
+module load PyTorch/2.13.0-foss-2026-Python-3.14.4-CUDA-13.2.1
+
 python3 check_gpu.py

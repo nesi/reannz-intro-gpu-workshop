@@ -41,9 +41,8 @@ own work:
 | [B3: Long jobs](docs/long-jobs.md) | Time limits, checkpoints, and why a job is pending |
 | [B4: More than one GPU, and less than one](docs/more-than-one-gpu.md) | When a second GPU helps, and what to do with small jobs |
 
-**Reference:** [commands](docs/R1-command-reference.md), [the GPUs on this
-cluster](docs/R2-gpu-reference.md), and a [setup page for
-trainers](docs/setup-gpu-workshop.md).
+**Reference:** [commands](docs/R1-command-reference.md) and [the GPUs on this
+cluster](docs/R2-gpu-reference.md).
 
 ## Repository layout
 
@@ -54,20 +53,16 @@ trainers](docs/setup-gpu-workshop.md).
 | [`mkdocs.yml`](mkdocs.yml) | The MkDocs site configuration and navigation |
 | [`overrides/`](overrides/) | Theme overrides |
 
-## The training environment
+## Teaching it
 
-The workshop runs in the [GPU JupyterLab
-app](https://github.com/nesi/training-environment-jupyter-gpu-app) on the
-[REANNZ training environment](https://github.com/nesi/training-environment).
+The pages are written for Mahuika: every command, script and output on them is
+what a learner would type and see there.
 
-**That environment has no GPUs.** It emulates one, closely enough that
-`nvidia-smi`, `nvtop`, `seff`, `sbatch` and PyTorch's CUDA API all behave the
-way they do on the cluster — real utilisation, real device memory, real job
-accounting, real out-of-memory errors. The arithmetic runs on the CPU.
-
-**No timing measured in that environment means anything about GPU
-performance**, and nothing in this workshop asks anyone to time anything.
-Reading the tools is the skill being taught, and it transfers unchanged.
+The workshop is taught in the [GPU JupyterLab app](https://github.com/nesi/training-environment-jupyter-gpu-app) on the
+[REANNZ training environment](https://github.com/nesi/training-environment),
+which emulates Mahuika's GPUs on infrastructure that has none. The trainers'
+guide, `TEACHING.md` in that repository, covers deployment, session sizing,
+timings, and where a session differs from the pages.
 
 To try it without deploying anything, with Docker:
 
@@ -76,9 +71,6 @@ git clone https://github.com/nesi/training-environment-jupyter-gpu-app.git
 cd training-environment-jupyter-gpu-app
 ./run-local.sh
 ```
-
-See [the setup page](docs/setup-gpu-workshop.md) for deployment, session
-sizing and suggested timings.
 
 ## Building the site locally
 

@@ -38,8 +38,8 @@ Before measuring anything carefully, look at the job with your own eyes. It
 takes two minutes and it catches the failures that would make every later
 measurement meaningless.
 
-The files for this chapter are in `~/gpu-training/putting-it-together`, and also
-[on GitHub](https://github.com/nesi/reannz-intro-gpu-workshop/tree/main/examples/putting-it-together){: target="_blank" rel="noopener" } to read outside the training environment.
+The files for this chapter are in `~/gpu-training/putting-it-together`, and
+[on GitHub](https://github.com/nesi/reannz-intro-gpu-workshop/tree/main/examples/putting-it-together){: target="_blank" rel="noopener" }.
 
 !!! dumbbell "Exercise 1: watch a job live"
 
@@ -96,33 +96,83 @@ Only once the GPU is genuinely being used is there any point measuring how
 
 ## Pass 2: which card does it fit in?
 
-Now the memory ladder from the flow diagram. The same job has already been run
-on each card in turn, so you do not have to wait for five queues.
+Now the memory ladder from the flow diagram. The same job has been run on each
+card in turn, so you do not have to wait for five queues. The A100 jobs asked
+for `a100:1` with `--constraint a100_40gb` or `a100_80gb`.
 
 !!! dumbbell "Exercise 2: find the smallest card that fits"
 
-    **List the finished jobs.**
+    **Read what `seff` said about each job**, and fill in the table below.
 
-    ```bash
-    cd ~/gpu-training/putting-it-together
-    cat jobs-by-card.txt
-    ```
+    === "L4"
 
-    ```
-    l4                  2001001
-    a100 + a100_40gb    2001002
-    a100 + a100_80gb    2001003
-    h100                2001004
-    pro_6000            2001005
-    ```
+        ```
+        Job ID: 2001001
+        State: FAILED
+        Tasks: 1
+        Cores: 4
+        Job Wall-time:          5%  00:00:48 of 00:15:00 time limit
+        Avg CPU Utilisation:   55%  00:01:45 of 00:03:12 core-walltime
+        Peak Mem Utilisation:  19%  6.20 GB of 32.00 GB
+        Peak GPU Utilisation:  31%
+        Peak GPU Memory Util:  98%  23.64 GB of 24 GB
+        ```
 
-    Both A100s are `a100` to Slurm, and the constraint says which size.
+    === "A100 40 GB"
 
-    **Run `seff` on each of them** and fill in the table below.
+        ```
+        Job ID: 2001002
+        State: COMPLETED
+        Tasks: 1
+        Cores: 4
+        Job Wall-time:         67%  00:10:00 of 00:15:00 time limit
+        Avg CPU Utilisation:   64%  00:25:36 of 00:40:00 core-walltime
+        Peak Mem Utilisation:  19%  6.20 GB of 32.00 GB
+        Peak GPU Utilisation:  35%
+        Peak GPU Memory Util:  75%  30.10 GB of 40 GB
+        ```
 
-    ```bash
-    seff 2001001
-    ```
+    === "A100 80 GB"
+
+        ```
+        Job ID: 2001003
+        State: COMPLETED
+        Tasks: 1
+        Cores: 4
+        Job Wall-time:         67%  00:10:00 of 00:15:00 time limit
+        Avg CPU Utilisation:   64%  00:25:36 of 00:40:00 core-walltime
+        Peak Mem Utilisation:  19%  6.20 GB of 32.00 GB
+        Peak GPU Utilisation:  35%
+        Peak GPU Memory Util:  38%  30.10 GB of 80 GB
+        ```
+
+    === "H100"
+
+        ```
+        Job ID: 2001004
+        State: COMPLETED
+        Tasks: 1
+        Cores: 4
+        Job Wall-time:         67%  00:10:00 of 00:15:00 time limit
+        Avg CPU Utilisation:   64%  00:25:36 of 00:40:00 core-walltime
+        Peak Mem Utilisation:  19%  6.20 GB of 32.00 GB
+        Peak GPU Utilisation:  35%
+        Peak GPU Memory Util:  32%  30.10 GB of 94 GB
+        ```
+
+    === "RTX PRO 6000"
+
+        ```
+        Job ID: 2001005
+        State: COMPLETED
+        Tasks: 1
+        Cores: 4
+        Job Wall-time:         67%  00:10:00 of 00:15:00 time limit
+        Avg CPU Utilisation:   64%  00:25:36 of 00:40:00 core-walltime
+        Peak Mem Utilisation:  19%  6.20 GB of 32.00 GB
+        Peak GPU Utilisation:  35%
+        Peak GPU Memory Util:  31%  30.10 GB of 96 GB
+        ```
 
     | Card | State | GPU memory used | Fits? |
     |---|---|---|---|
@@ -139,7 +189,7 @@ on each card in turn, so you do not have to wait for five queues.
 
         | Card | State | GPU memory used | Fits? |
         |---|---|---|---|
-        | L4 (24 GB) | `FAILED` | — | **No** |
+        | L4 (24 GB) | `FAILED` | 23.6 GB of 24 GB — 98% | **No** |
         | A100 (40 GB) | `COMPLETED` | 30.1 GB of 40 GB — 75% | **Yes** |
         | A100 (80 GB) | `COMPLETED` | 30.1 GB of 80 GB — 38% | Yes |
         | H100 (94 GB) | `COMPLETED` | 30.1 GB of 94 GB — 32% | Yes |
@@ -177,22 +227,79 @@ need, but do change how well it is used.
 
 !!! dumbbell "Exercise 3a: settle the core count"
 
-    The same job, on the 40 GB A100, submitted at five core counts:
-
-    ```bash
-    cat jobs-by-cores.txt
-    ```
-
-    ```
-    1  cpu   2002001
-    2  cpus  2002002
-    4  cpus  2002003
-    8  cpus  2002004
-    16 cpus  2002005
-    ```
-
-    Run `seff` on each and record two numbers: **CPU Utilisation** and **GPU
+    The same job, on the 40 GB A100, submitted at five core counts. From each
+    report, record two numbers: **Avg CPU Utilisation** and **Peak GPU
     Utilisation**.
+
+    === "1 core"
+
+        ```
+        Job ID: 2002001
+        State: COMPLETED
+        Tasks: 1
+        Cores: 1
+        Job Wall-time:         97%  00:14:35 of 00:15:00 time limit
+        Avg CPU Utilisation:  100%  00:14:35 of 00:14:35 core-walltime
+        Peak Mem Utilisation:  10%  3.05 GB of 32.00 GB
+        Peak GPU Utilisation:  24%
+        Peak GPU Memory Util:  75%  30.10 GB of 40 GB
+        ```
+
+    === "2 cores"
+
+        ```
+        Job ID: 2002002
+        State: COMPLETED
+        Tasks: 1
+        Cores: 2
+        Job Wall-time:         75%  00:11:17 of 00:15:00 time limit
+        Avg CPU Utilisation:   81%  00:18:17 of 00:22:34 core-walltime
+        Peak Mem Utilisation:  13%  4.10 GB of 32.00 GB
+        Peak GPU Utilisation:  31%
+        Peak GPU Memory Util:  75%  30.10 GB of 40 GB
+        ```
+
+    === "4 cores"
+
+        ```
+        Job ID: 2002003
+        State: COMPLETED
+        Tasks: 1
+        Cores: 4
+        Job Wall-time:         67%  00:10:00 of 00:15:00 time limit
+        Avg CPU Utilisation:   64%  00:25:36 of 00:40:00 core-walltime
+        Peak Mem Utilisation:  19%  6.20 GB of 32.00 GB
+        Peak GPU Utilisation:  35%
+        Peak GPU Memory Util:  75%  30.10 GB of 40 GB
+        ```
+
+    === "8 cores"
+
+        ```
+        Job ID: 2002004
+        State: COMPLETED
+        Tasks: 1
+        Cores: 8
+        Job Wall-time:         65%  00:09:43 of 00:15:00 time limit
+        Avg CPU Utilisation:   38%  00:29:33 of 01:17:46 core-walltime
+        Peak Mem Utilisation:  32%  10.40 GB of 32.00 GB
+        Peak GPU Utilisation:  36%
+        Peak GPU Memory Util:  75%  30.10 GB of 40 GB
+        ```
+
+    === "16 cores"
+
+        ```
+        Job ID: 2002005
+        State: COMPLETED
+        Tasks: 1
+        Cores: 16
+        Job Wall-time:         65%  00:09:43 of 00:15:00 time limit
+        Avg CPU Utilisation:   20%  00:31:06 of 02:35:33 core-walltime
+        Peak Mem Utilisation:  59%  18.80 GB of 32.00 GB
+        Peak GPU Utilisation:  36%
+        Peak GPU Memory Util:  75%  30.10 GB of 40 GB
+        ```
 
     ??? "What you should find"
 
@@ -220,7 +327,7 @@ need, but do change how well it is used.
     you expected, plot it:
 
     ```bash
-    profile_plot 2002003
+    profile_plot <JobID>
     ```
 
     A **steady** 35% and a job **alternating** between 100% and 0% both average
@@ -231,11 +338,11 @@ need, but do change how well it is used.
 
 !!! dumbbell "Exercise 3b: settle the memory request"
 
-    Take the four-core job — `seff 2002003` — and look at the `Mem
-    Utilisation` line rather than the GPU ones.
+    Take the four-core job's report from exercise 3a, and look at the `Peak
+    Mem Utilisation` line rather than the GPU ones:
 
     ```
-    Mem Utilisation:  19.4%  6.20 GB of 32.00 GB
+    Peak Mem Utilisation:  19%  6.20 GB of 32.00 GB
     ```
 
     1. What was the peak CPU memory this job actually used?

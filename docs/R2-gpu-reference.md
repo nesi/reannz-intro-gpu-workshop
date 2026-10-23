@@ -2,8 +2,7 @@
 
 Figures are the manufacturers' published specifications, and the node layout is
 from the cluster's [hardware
-documentation](https://docs.nesi.org.nz/Batch_Computing/Hardware/). Nothing on
-this page is measured in the training environment, which has no GPU.
+documentation](https://docs.nesi.org.nz/Batch_Computing/Hardware/).
 
 ## Side by side
 

@@ -1,17 +1,41 @@
 #!/usr/bin/env python3
 """The GPUs available on the cluster, side by side, with the numbers that matter.
 
-None of these figures are measured here - this environment has no GPU and
-nothing in it runs at these speeds. They are the manufacturer's published
-specifications, printed together so the trade-offs are visible in one place.
+These are the manufacturers' published figures, not measurements, printed
+together so the trade-offs are visible in one place.
 
 The column to look at first is fp64:fp32. It is the ratio of double-precision
 to single-precision throughput, and it splits this fleet cleanly in two.
 """
 
-from gpuemu.spec import DEVICES, FLEET
+from dataclasses import dataclass
 
-rows = [DEVICES[key] for key in FLEET]
+
+@dataclass(frozen=True)
+class Card:
+    name: str
+    vram_gb: int
+    max_per_node: int
+    fp32_tflops: float
+    fp64_tflops: float
+    gres_name: str          # how --gpus-per-node spells it
+    feature: str = ""       # the --constraint that picks it, if it shares a name
+
+    @property
+    def fp64_ratio(self) -> float:
+        return self.fp64_tflops / self.fp32_tflops
+
+
+# The GPUs on Mahuika, from the manufacturers' published figures.
+CARDS = [
+    Card("NVIDIA L4", 24, 4, 30.3, 0.489, "l4"),
+    Card("NVIDIA A100-PCIE-40GB", 40, 3, 19.5, 9.7, "a100", "a100_40gb"),
+    Card("NVIDIA A100-SXM4-80GB", 80, 4, 19.5, 9.7, "a100", "a100_80gb"),
+    Card("NVIDIA H100 NVL", 94, 2, 60.0, 30.0, "h100"),
+    Card("NVIDIA RTX PRO 6000 Blackwell Server Edition", 96, 2, 120.0, 1.9, "pro_6000"),
+]
+
+rows = CARDS
 
 print()
 print("GPUs on this cluster")

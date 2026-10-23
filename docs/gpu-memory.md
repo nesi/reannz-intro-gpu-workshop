@@ -105,8 +105,8 @@ In this order:
 Adding `--mem` will not help. That is CPU memory
 ([How much CPU memory should I request?](cpu-memory.md)).
 
-The files for this chapter are in `~/gpu-training/gpu-memory`, and also
-[on GitHub](https://github.com/nesi/reannz-intro-gpu-workshop/tree/main/examples/gpu-memory){: target="_blank" rel="noopener" } to read outside the training environment.
+The files for this chapter are in `~/gpu-training/gpu-memory`, and
+[on GitHub](https://github.com/nesi/reannz-intro-gpu-workshop/tree/main/examples/gpu-memory){: target="_blank" rel="noopener" }.
 
 !!! dumbbell "Exercise: fill a GPU until it refuses"
 
@@ -130,15 +130,15 @@ The files for this chapter are in `~/gpu-training/gpu-memory`, and also
            GPU moves only the VRAM column. Freeing the RAM copy changes
            nothing on the GPU. **Two pools, not connected.**
         2. About 15 GB: 3.7 GB of weights, times four.
-        3. The card filled 12 MB at a time, then:
+        3. The card filled about 1.4 GB at a time, then:
 
             ```
-            CUDA out of memory. Tried to allocate 12.00 MiB (GPU 0; 195.00 MiB
-            total capacity; 192.00 MiB already allocated; 3.00 MiB free).
+            CUDA out of memory. Tried to allocate 1.41 GiB (GPU 0; 21.97 GiB
+            total capacity; 21.08 GiB already allocated; 916.00 MiB free).
             ```
 
-            A small allocation, on a card that was already full — the straw,
-            not the load.
+            An allocation small next to what the card already held — the
+            straw, not the load.
 
 ---
 

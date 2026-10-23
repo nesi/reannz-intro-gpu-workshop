@@ -78,7 +78,7 @@ This is the one that matters, and the one people skip.
     [B1: Getting your software running on a GPU](software.md) is about
     fixing it.
 
-### Both at once
+### Running these checks together
 
 The files for this chapter are in `~/gpu-training/first-job`, and also
 [on GitHub](https://github.com/nesi/reannz-intro-gpu-workshop/tree/main/examples/first-job){: target="_blank" rel="noopener" } to read outside the training environment.

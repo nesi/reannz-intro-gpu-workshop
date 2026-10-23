@@ -1,0 +1,135 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 305" width="700" height="305" role="img" aria-label="The same timeline with four CPU cores. Each core prepares a different batch at the same time, so batches arrive faster than the GPU can consume them and the GPU track is solid after the first batch.">
+  <title>The same job with four CPU cores</title>
+  <desc>Four CPU cores prepare four batches simultaneously, so a batch becomes ready every 45 units of time while the GPU takes 70 units to compute one. After waiting for the first batch the GPU runs continuously, with no idle gaps, and the cores run ahead of it.</desc>
+
+  <defs>
+    <!-- Same hatch as the starved figure, so the two can be compared directly. -->
+    <pattern id="idleHatch" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+      <rect width="8" height="8" fill="#2a2016"/>
+      <rect width="3" height="8" fill="#f8961d" opacity="0.38"/>
+    </pattern>
+    <marker id="handoff" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#c3d4e0" opacity="0.6"/>
+    </marker>
+    <marker id="timeArrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#c3d4e0" opacity="0.6"/>
+    </marker>
+    <!-- The tracks run off the right edge rather than stopping dead: a
+         luminance mask fades them out, and an ellipsis follows. -->
+    <linearGradient id="fadeGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset="1" stop-color="#000000"/>
+    </linearGradient>
+    <mask id="fadeRight" maskUnits="userSpaceOnUse" x="0" y="0" width="700" height="305">
+      <rect x="0" y="0" width="605" height="305" fill="#ffffff"/>
+      <rect x="605" y="0" width="55" height="305" fill="url(#fadeGrad)"/>
+    </mask>
+  </defs>
+
+  <g font-family="Mukta, 'Helvetica Neue', Helvetica, Arial, sans-serif">
+
+    <!-- Row labels -->
+    <text x="76" y="51"  font-size="12" font-weight="700" fill="#e9f1f7" text-anchor="end">CPU core 1</text>
+    <text x="76" y="89"  font-size="12" font-weight="700" fill="#e9f1f7" text-anchor="end">CPU core 2</text>
+    <text x="76" y="127" font-size="12" font-weight="700" fill="#e9f1f7" text-anchor="end">CPU core 3</text>
+    <text x="76" y="165" font-size="12" font-weight="700" fill="#e9f1f7" text-anchor="end">CPU core 4</text>
+    <text x="76" y="219" font-size="15" font-weight="700" fill="#e9f1f7" text-anchor="end">GPU</text>
+
+    <!-- Four cores, each preparing a different batch at the same time.
+         Same 180-unit prepare time per batch as the one-core figure. -->
+    <g font-size="12" fill="#04202f" font-weight="600" text-anchor="middle" mask="url(#fadeRight)">
+      <g>
+        <rect x="90"  y="30" width="180" height="32" rx="4" fill="#23abe3"/>
+        <rect x="270" y="30" width="180" height="32" rx="4" fill="#23abe3"/>
+        <rect x="450" y="30" width="180" height="32" rx="4" fill="#23abe3"/>
+        <rect x="624" y="30" width="186" height="32" rx="4" fill="#23abe3"/>
+        <path d="M 270 30 L 270 62 M 450 30 L 450 62" stroke="#0d1b2a" stroke-width="2" opacity="0.85"/>
+        <text x="180" y="51">batch 1</text>
+        <text x="360" y="51">batch 5</text>
+        <text x="540" y="51">batch 9</text>
+      </g>
+      <g>
+        <rect x="90"  y="68" width="180" height="32" rx="4" fill="#23abe3"/>
+        <rect x="270" y="68" width="180" height="32" rx="4" fill="#23abe3"/>
+        <rect x="450" y="68" width="180" height="32" rx="4" fill="#23abe3"/>
+        <rect x="624" y="68" width="186" height="32" rx="4" fill="#23abe3"/>
+        <path d="M 270 68 L 270 100 M 450 68 L 450 100" stroke="#0d1b2a" stroke-width="2" opacity="0.85"/>
+        <text x="180" y="89">batch 2</text>
+        <text x="360" y="89">batch 6</text>
+        <text x="540" y="89">batch 10</text>
+      </g>
+      <g>
+        <rect x="90"  y="106" width="180" height="32" rx="4" fill="#23abe3"/>
+        <rect x="270" y="106" width="180" height="32" rx="4" fill="#23abe3"/>
+        <rect x="450" y="106" width="180" height="32" rx="4" fill="#23abe3"/>
+        <rect x="624" y="106" width="186" height="32" rx="4" fill="#23abe3"/>
+        <path d="M 270 106 L 270 138 M 450 106 L 450 138" stroke="#0d1b2a" stroke-width="2" opacity="0.85"/>
+        <text x="180" y="127">batch 3</text>
+        <text x="360" y="127">batch 7</text>
+        <text x="540" y="127">batch 11</text>
+      </g>
+      <g>
+        <rect x="90"  y="144" width="180" height="32" rx="4" fill="#23abe3"/>
+        <rect x="270" y="144" width="180" height="32" rx="4" fill="#23abe3"/>
+        <rect x="450" y="144" width="180" height="32" rx="4" fill="#23abe3"/>
+        <rect x="624" y="144" width="186" height="32" rx="4" fill="#23abe3"/>
+        <path d="M 270 144 L 270 176 M 450 144 L 450 176" stroke="#0d1b2a" stroke-width="2" opacity="0.85"/>
+        <text x="180" y="165">batch 4</text>
+        <text x="360" y="165">batch 8</text>
+        <text x="540" y="165">batch 12</text>
+      </g>
+    </g>
+
+    <!-- GPU: still waits for the very first batch, then never stops. -->
+    <g mask="url(#fadeRight)">
+      <rect x="90"  y="192" width="180" height="44" rx="4" fill="url(#idleHatch)" stroke="#f8961d" stroke-width="1.5" stroke-dasharray="5 3"/>
+      <rect x="270" y="192" width="70" height="44" rx="4" fill="#1f3f63"/>
+      <rect x="340" y="192" width="70" height="44" rx="4" fill="#1f3f63"/>
+      <rect x="410" y="192" width="70" height="44" rx="4" fill="#1f3f63"/>
+      <rect x="480" y="192" width="70" height="44" rx="4" fill="#1f3f63"/>
+      <rect x="550" y="192" width="70" height="44" rx="4" fill="#1f3f63"/>
+      <rect x="614" y="192" width="76" height="44" rx="4" fill="#1f3f63"/>
+      <path d="M 340 192 L 340 236 M 410 192 L 410 236 M 480 192 L 480 236 M 550 192 L 550 236" stroke="#23abe3" stroke-width="1.5" opacity="0.55"/>
+      <g text-anchor="middle">
+        <text x="180" y="219" font-size="13" fill="#f8b45a">waiting for batch 1</text>
+        <text x="305" y="219" font-size="11" fill="#e9f1f7">compute 1</text>
+        <text x="375" y="219" font-size="11" fill="#e9f1f7">compute 2</text>
+        <text x="445" y="219" font-size="11" fill="#e9f1f7">compute 3</text>
+        <text x="515" y="219" font-size="11" fill="#e9f1f7">compute 4</text>
+        <text x="585" y="219" font-size="11" fill="#e9f1f7">compute 5</text>
+      </g>
+    </g>
+
+    <!-- "and so on" -->
+    <g font-size="20" fill="#c3d4e0" opacity="0.6" text-anchor="middle">
+      <text x="668" y="54">…</text>
+      <text x="668" y="92">…</text>
+      <text x="668" y="130">…</text>
+      <text x="668" y="168">…</text>
+      <text x="668" y="222">…</text>
+    </g>
+
+    <!-- All four cores finish together, so batches arrive four at a time. -->
+    <g stroke="#c3d4e0" stroke-width="1.3" opacity="0.6" stroke-dasharray="3 2" marker-end="url(#handoff)">
+      <path d="M 270 178 L 270 189"/>
+      <path d="M 450 178 L 450 189"/>
+    </g>
+
+    <!-- Time -->
+    <path d="M 90 256 L 648 256" stroke="#c3d4e0" stroke-width="1.3" opacity="0.6" marker-end="url(#timeArrow)"/>
+    <text x="660" y="260" font-size="12" fill="#c3d4e0" opacity="0.85">time</text>
+
+    <!-- Legend -->
+    <g font-size="12" fill="#c3d4e0">
+      <rect x="90" y="278" width="12" height="12" rx="2" fill="#23abe3"/>
+      <text x="108" y="288">CPU preparing a batch</text>
+
+      <rect x="250" y="278" width="12" height="12" rx="2" fill="#1f3f63"/>
+      <text x="268" y="288">GPU computing</text>
+
+      <rect x="390" y="278" width="12" height="12" rx="2" fill="url(#idleHatch)" stroke="#f8961d" stroke-width="1.2"/>
+      <text x="408" y="288">GPU idle, waiting for work</text>
+    </g>
+
+  </g>
+</svg>

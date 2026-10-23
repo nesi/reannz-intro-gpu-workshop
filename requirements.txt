@@ -8,3 +8,4 @@ pillow
 mkdocs-material 
 mkdocs-awesome-pages-plugin
 mkdocs-glightbox
+mkdocs-redirects

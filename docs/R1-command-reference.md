@@ -26,9 +26,12 @@ Command-line options beat `#SBATCH` directives in the file.
 | `--mem 8GB` | System RAM (not VRAM) |
 | `--mem-per-cpu 2GB` | RAM per core, instead of a total |
 | `--gpus-per-node TYPE:N` | GPUs, by type |
+| `--constraint a100_40gb` | Which A100: `a100_40gb` or `a100_80gb` |
 | `--output FILE-%j.out` | Where output goes. `%j` is the job ID |
-| `--qos debug` | Short, high-priority queue. 15 minute limit |
+| `--qos debug` | High priority, strict limits, one job at a time ([Debug QoS](https://docs.nesi.org.nz/Batch_Computing/Debug_QoS/)) |
 | `--profile task` | Record resource use for `profile_plot` |
+| `--acctg-freq 1` | Take those records once a second |
+| `--dependency=afterok:ID` | Start only once job `ID` has succeeded |
 
 ### `squeue`
 
@@ -37,9 +40,11 @@ squeue --me                  # your jobs
 squeue --me -t R             # just the running ones
 squeue -j 12345              # one job
 squeue --me -h               # no header (-h is NOT --help here)
+squeue --me --start          # when pending jobs should start (not in the training environment)
 ```
 
-`ST` column: `PD` pending, `R` running, `CG` completing.
+`ST` column: `PD` pending, `R` running, `CG` completing. For a pending job, the
+last column gives the reason it is waiting — see [B3: Long jobs](long-jobs.md#why-is-my-job-pending).
 
 ### `scancel`
 
@@ -128,6 +133,31 @@ nvtop
 | `F6` | Sort the process list |
 | `F9` | Kill a process |
 | `+` / `-` | Change the graph's time window |
+
+## Interactive sessions
+
+### A job that waits
+
+```bash
+sbatch hold-gpu.sl           # a job whose only command is: sleep infinity
+svisit 12345                 # a terminal inside it, as often as you like
+svisit 12345 nvtop           # or straight into a command
+exit                         # leave the terminal - the job carries on
+scancel 12345                # end the job, and give the GPU back
+```
+
+The GPU is held from the moment the job starts until `scancel` or the time
+limit, whether you are using it or not.
+
+### `srun --pty`
+
+```bash
+srun --gpus-per-node l4:1 --cpus-per-task 2 --mem 4GB --time 00:15:00 --pty bash
+```
+
+Asks for the GPU and puts you inside the job in one step. It ends when you
+`exit` — or when your connection drops. Not available in the training
+environment.
 
 ## After a job
 

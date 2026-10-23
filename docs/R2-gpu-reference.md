@@ -7,24 +7,25 @@ this page is measured in the training environment, which has no GPU.
 
 ## Side by side
 
-| | **L4** | **A100** | **H100 NVL** | **RTX PRO 6000** |
-|---|---|---|---|---|
-| Slurm name | `l4` | `a100` | `h100` | `pro_6000` |
-| VRAM | 24 GB | 80 GB | 94 GB | 96 GB |
-| Per node | 4 | 4 | 2 | 2 |
-| Architecture | Ada Lovelace | Ampere | Hopper | Blackwell |
-| Compute capability | 8.9 | 8.0 | 9.0 | 12.0 |
-| **fp32** | 30.3 TFLOPS | 19.5 TFLOPS | 60 TFLOPS | **120 TFLOPS** |
-| **fp64** | 0.5 TFLOPS | **9.7 TFLOPS** | **30 TFLOPS** | 1.9 TFLOPS |
-| **fp64 : fp32** | 1:62 | **1:2** | **1:2** | 1:63 |
-| Memory bandwidth | 300 GB/s | 2.0 TB/s | 3.9 TB/s | 1.6 TB/s |
-| Power | 72 W | 400 W | 400 W | 600 W |
+| | **L4** | **A100 40 GB** | **A100 80 GB** | **H100 NVL** | **RTX PRO 6000** |
+|---|---|---|---|---|---|
+| Slurm name | `l4` | `a100`, with `--constraint a100_40gb` | `a100`, with `--constraint a100_80gb` | `h100` | `pro_6000` |
+| VRAM | 24 GB | 40 GB | 80 GB | 94 GB | 96 GB |
+| Per node | 4 | 3 | 4 | 2 | 2 |
+| Architecture | Ada Lovelace | Ampere | Ampere | Hopper | Blackwell |
+| Compute capability | 8.9 | 8.0 | 8.0 | 9.0 | 12.0 |
+| **fp32** | 30.3 TFLOPS | 19.5 TFLOPS | 19.5 TFLOPS | 60 TFLOPS | **120 TFLOPS** |
+| **fp64** | 0.5 TFLOPS | **9.7 TFLOPS** | **9.7 TFLOPS** | **30 TFLOPS** | 1.9 TFLOPS |
+| **fp64 : fp32** | 1:62 | **1:2** | **1:2** | **1:2** | 1:63 |
+| Memory bandwidth | 300 GB/s | 1.6 TB/s | 2.0 TB/s | 3.9 TB/s | 1.6 TB/s |
+| Power | 72 W | 250 W | 400 W | 400 W | 600 W |
 
 ## Host nodes
 
 | GPU | Node CPU | Cores | RAM | GPUs | Cores per GPU |
 |---|---|---|---|---|---|
-| A100 | AMD Milan 7713P | 64 | 512 GB | 4 | ~16 |
+| A100 80 GB | AMD Milan 7713P | 64 | 512 GB | 4 | ~16 |
+| A100 40 GB | 2× AMD Milan 7413 | 48 | 512 GB | 3 | ~16 |
 | RTX PRO 6000 | 2× AMD Genoa 9634 | 168 | 768 GB | 2 | ~84 |
 | H100 NVL | 2× AMD Genoa 9634 | 168 | 768 GB | 2 | ~84 |
 | L4 | 2× AMD Genoa 9634 | 168 | 768 GB | 4 | ~42 |
@@ -36,10 +37,19 @@ have in mind when deciding `--cpus-per-task`.
 
 ```bash
 #SBATCH --gpus-per-node l4:1
+
 #SBATCH --gpus-per-node a100:1
+#SBATCH --constraint    a100_40gb       # the 40 GB A100
+
+#SBATCH --gpus-per-node a100:1
+#SBATCH --constraint    a100_80gb       # the 80 GB A100
+
 #SBATCH --gpus-per-node h100:1
+
 #SBATCH --gpus-per-node pro_6000:1
 ```
+
+Without the constraint, an `a100` request can land on either A100.
 
 Ask for more than one only if your software says it can use more than one.
 
@@ -48,8 +58,9 @@ Ask for more than one only if your software says it can use more than one.
 !!! warning "Double precision first"
 
     The **L4 and RTX PRO 6000 should be avoided for double-precision (fp64)
-    work.** At about 1:60 they are roughly thirty times slower than an A100 at
-    fp64, and nothing warns you — the job simply takes weeks instead of hours.
+    work.** At fp64 the L4 is about twenty times slower than an A100, and the
+    RTX PRO 6000 about five times, and nothing warns you — the job simply takes
+    days instead of hours.
 
     If your software needs fp64, your choice is **A100 or H100**, whatever else
     is true.
@@ -59,7 +70,8 @@ Otherwise, by what you need:
 | Situation | Card |
 |---|---|
 | fp32 or fp16, fits in 24 GB | **L4** — shortest queue, plenty for most work |
-| fp64, up to 80 GB | **A100** |
+| fp64, up to 40 GB | **A100 40 GB** |
+| fp64, up to 80 GB, or four GPUs that talk to each other | **A100 80 GB** |
 | fp64, the largest models | **H100 NVL** |
 | fp32/fp16 and very large, or wants the most raw fp32 | **RTX PRO 6000** |
 | Not sure yet | **L4** — measure with `seff`, move up if it does not fit |
@@ -91,10 +103,10 @@ choose.
 
 !!! note "Why the RTX PRO 6000 is the interesting one"
 
-    It has the highest fp32 figure in the fleet by a wide margin — four times
+    It has the highest fp32 figure in the fleet by a wide margin — six times
     an A100 — and one of the lowest fp64 figures.
 
     For machine learning it is outstanding. For a quantum chemistry or CFD code
     it is one of the worst choices available. The same card, for the same
     money, depending entirely on what you run on it. That is the clearest
-    illustration there is of why [chapter 2](02-which-gpu.md) matters.
+    illustration there is of why [precision](precision.md) matters.

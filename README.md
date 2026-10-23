@@ -6,14 +6,14 @@ researchers how to choose, request and monitor GPUs on an HPC such as
 
 📖 **Read the workshop here: <https://nesi.github.io/reannz-intro-gpu-workshop/>**
 
-The material is a single track of six chapters built around one question —
+The material is ten chapters in five stages, built around one question —
 *which GPU should I use for my work?* — which the workshop opens with and can
-only answer at the end, once a learner can measure what it depends on. The
-pages live in [`docs/`](docs/).
+only answer at the end, once a learner can measure what it depends on. It is
+sized for a single four-hour session. The pages live in [`docs/`](docs/).
 
 It assumes most of the audience has run a Slurm job before, so the opening
-moves quickly. Background for anyone meeting GPUs for the first time is
-supplementary rather than in the main flow.
+moves quickly. What a GPU is good for comes first, briefly, for anyone meeting
+GPUs for the first time.
 
 ## Who this is for
 
@@ -23,23 +23,23 @@ prior GPU experience. Everything is done from a terminal.
 
 ## Workshop structure
 
-| Chapter | Covers |
+| Stage | Chapters |
 |---|---|
-| 1. Getting a GPU job running | The Slurm flags, and confirming your software sees the GPU |
-| 2. Asking for the right resources | CPUs, RAM and VRAM: sizing each, and reading an OOM error |
-| 3. Watching a job with nvtop | `svisit`, and reading utilisation over time |
-| 4. Reading seff | The report card, and the two GPU lines |
-| 5. Precision | fp32 vs fp64, and why it decides the card |
-| 6. Choosing a GPU | The measurements, combined into a request |
+| 1. Getting started with GPUs | [Introduction](docs/introduction.md) · [Your first GPU job](docs/first-gpu-job.md) · [Is it really using the GPU?](docs/using-the-gpu.md) |
+| 2. Asking for the right resources | [Which GPU: precision](docs/precision.md) · [Which GPU: will it fit?](docs/gpu-memory.md) · [How many CPUs](docs/how-many-cpus.md) · [How much CPU memory](docs/cpu-memory.md) |
+| 3. Measuring your GPU jobs | [Measuring a GPU job](docs/measuring.md) |
+| 4. Running interactive jobs | [Running interactive sessions with GPUs](docs/interactive-sessions.md) |
+| 5. Putting it all together | [Putting it all together](docs/putting-it-together.md) · [Summary and checklist](docs/summarising.md) |
 
-Plus a [summary and checklist](docs/summarising.md).
-
-**Supplementary**, outside the main sequence:
+**Beyond the basics**, for after the workshop, when a learner sets up their
+own work:
 
 | | |
 |---|---|
-| [S1: What a GPU is](docs/S1-what-a-gpu-is.md) | Optional background for anyone new to GPUs |
-| [S2: Splitting CPU and GPU work](docs/S2-splitting-the-work.md) | Which stages a GPU can help with, and the ceiling |
+| [B1: Getting your software running on a GPU](docs/software.md) | Modules, Python environments, containers, and builds too old for the card |
+| [B2: Where the time goes](docs/where-the-time-goes.md) | Measuring the CPU and GPU parts of a job, and reading data quickly |
+| [B3: Long jobs](docs/long-jobs.md) | Time limits, checkpoints, and why a job is pending |
+| [B4: More than one GPU, and less than one](docs/more-than-one-gpu.md) | When a second GPU helps, and what to do with small jobs |
 
 **Reference:** [commands](docs/R1-command-reference.md), [the GPUs on this
 cluster](docs/R2-gpu-reference.md), and a [setup page for
@@ -50,7 +50,7 @@ trainers](docs/setup-gpu-workshop.md).
 | Path | Contents |
 |------|----------|
 | [`docs/`](docs/) | The lesson pages (Markdown), images and stylesheets |
-| [`examples/`](examples/) | The scripts and Slurm job files used in the lessons, grouped by chapter |
+| [`examples/`](examples/) | The scripts and Slurm job files used in the lessons, one folder per topic |
 | [`mkdocs.yml`](mkdocs.yml) | The MkDocs site configuration and navigation |
 | [`overrides/`](overrides/) | Theme overrides |
 

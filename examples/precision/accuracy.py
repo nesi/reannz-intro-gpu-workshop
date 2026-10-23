@@ -22,11 +22,11 @@ that takes two and a half days. So the question "which GPU?" usually reduces
 to "does my software need double precision?" - and the answer is a property of
 your software, not something you get to choose.
 
-    Usually needs fp64      molecular dynamics, quantum chemistry, CFD,
-                            climate models, linear solvers, anything where
-                            small errors accumulate over millions of steps
-    Usually fine in fp32    machine learning, image processing, most
-                            Monte Carlo work, visualisation
+    Usually needs fp64      quantum chemistry, CFD, climate models, linear
+                            solvers, anything where small errors accumulate
+                            over millions of steps
+    Usually fine in fp32    machine learning, molecular dynamics, image
+                            processing, most Monte Carlo work, visualisation
     Often fine in fp16      neural network training and inference, which is
                             what the newer cards are optimised for
 

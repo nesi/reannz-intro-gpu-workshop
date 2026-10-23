@@ -22,5 +22,7 @@ python3 how_much_vram.py
 
 echo
 echo "Afterwards, run 'seff ${SLURM_JOB_ID}'."
-echo "Peak Mem Utilisation is the RAM line. Peak GPU Memory Util is the VRAM"
-echo "line. This job should be low on the first and high on the second."
+echo "Peak Mem Utilisation is the RAM line, and Peak GPU Memory Util the VRAM"
+echo "line: two pools, counted separately. The VRAM line may well miss the"
+echo "moment the card was full. seff only sees memory when it is sampled, and"
+echo "this job filled the card for a fraction of a second."

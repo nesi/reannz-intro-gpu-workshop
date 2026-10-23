@@ -15,12 +15,12 @@ rows = [DEVICES[key] for key in FLEET]
 
 print()
 print("GPUs on this cluster")
-print("=" * 94)
+print("=" * 96)
 print(
     f"{'Card':<30}{'VRAM':>7}{'Per node':>10}{'fp32':>9}{'fp64':>9}"
-    f"{'fp64:fp32':>11}{'Slurm':>18}"
+    f"{'fp64:fp32':>11}{'Slurm':>20}"
 )
-print("-" * 94)
+print("-" * 96)
 for dev in rows:
     ratio = dev.fp64_ratio
     ratio_text = f"1:{round(1 / ratio)}" if ratio else "-"
@@ -31,14 +31,14 @@ for dev in rows:
         f"{dev.fp32_tflops:>8.0f}T"
         f"{dev.fp64_tflops:>8.1f}T"
         f"{ratio_text:>11}"
-        f"{dev.gres_name + ':1':>18}"
+        f"{dev.gres_name + ':1' + (f', {dev.feature}' if dev.feature else ''):>20}"
     )
-print("-" * 94)
+print("-" * 96)
 print("fp32 / fp64 are TFLOPS: trillions of floating point operations per second.")
 
 print()
 print("Reading this table")
-print("-" * 94)
+print("-" * 96)
 print("  A100 and H100 are 1:2 cards. They do double precision at half their")
 print("  single precision rate, which is as good as it gets. If your software")
 print("  needs fp64, these are your only sensible options.")
@@ -54,9 +54,14 @@ print("  fp64, an L4 you can have now beats an A100 you have to queue for.")
 
 print()
 print("How to request each of them")
-print("-" * 94)
+print("-" * 96)
 for dev in rows:
     print(f"  #SBATCH --gpus-per-node {dev.gres_name}:1")
+    if dev.feature:
+        print(f"  #SBATCH --constraint    {dev.feature}      # the {dev.vram_gb} GB A100")
+print()
+print("  Both A100s are 'a100' to Slurm, and the constraint picks the size.")
+print("  Without one, a100:1 can land on either.")
 print()
 print("  Ask for more than one only if your software says it can use more than")
 print("  one. Most cannot, and a second idle GPU helps nobody.")

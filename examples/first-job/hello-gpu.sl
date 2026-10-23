@@ -16,7 +16,7 @@
 #   --time              how long before Slurm stops the job.
 #
 # Leave out --gpus-per-node and the job still runs - it just runs without a
-# GPU. That is the single most common GPU mistake, and 02-forgot-the-gpu.sl
+# GPU. That is the single most common GPU mistake, and forgot-the-gpu.sl
 # is what it looks like.
 
 echo "Job ${SLURM_JOB_ID} is running on ${SLURMD_NODENAME}"

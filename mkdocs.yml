@@ -10,20 +10,27 @@ repo_url: https://github.com/nesi/reannz-intro-gpu-workshop
 
 nav:
   - Home: index.md
-  - "Writing your submit script":
-    - 01-the-submit-script.md
-    - 02-which-gpu.md
-    - 03-how-many-cpus.md
-    - 04-how-much-memory.md
+  - "Getting started with GPUs":
+    - introduction.md
+    - first-gpu-job.md
+    - using-the-gpu.md
+  - "Asking for the right resources":
+    - precision.md
+    - gpu-memory.md
+    - how-many-cpus.md
+    - cpu-memory.md
   - "Measuring your GPU jobs":
-    - 05-measuring-your-jobs.md
-    - 06-tools-for-measuring.md
+    - measuring.md
+  - "Running interactive jobs":
+    - interactive-sessions.md
   - "Putting it all together":
-    - 07-putting-it-together.md
+    - putting-it-together.md
     - summarising.md
-  - Supplementary:
-    - "S1: What a GPU Is": S1-what-a-gpu-is.md
-    - "S2: Splitting CPU and GPU Work": S2-splitting-the-work.md
+  - "Beyond the basics":
+    - "B1: Getting Your Software Running": software.md
+    - "B2: Where the Time Goes": where-the-time-goes.md
+    - "B3: Long Jobs and the Queue": long-jobs.md
+    - "B4: More Than One GPU, and Less Than One": more-than-one-gpu.md
   - Reference:
     - "R1: Command Reference": R1-command-reference.md
     - "R2: The GPUs on this Cluster": R2-gpu-reference.md
@@ -128,6 +135,19 @@ plugins:
       zoomable: true
   - search:
       lang: en
+  # The pages were renamed by topic when the workshop was restructured. These
+  # keep the old addresses working for anyone who saved or shared one.
+  - redirects:
+      redirect_maps:
+        01-the-submit-script.md: first-gpu-job.md
+        02-which-gpu.md: precision.md
+        03-how-many-cpus.md: how-many-cpus.md
+        04-how-much-memory.md: cpu-memory.md
+        05-measuring-your-jobs.md: measuring.md
+        06-tools-for-measuring.md: measuring.md
+        07-putting-it-together.md: putting-it-together.md
+        S1-what-a-gpu-is.md: introduction.md
+        S2-splitting-the-work.md: where-the-time-goes.md
 
 extra_javascript:
   - javascripts/mathjax.js

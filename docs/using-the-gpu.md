@@ -1,4 +1,4 @@
-# 7. Checking your job is using the GPU
+# 3. Is it really using the GPU?
 
 !!! clipboard-list "Lesson Objectives"
 
@@ -74,15 +74,26 @@ This is the one that matters, and the one people skip.
     | `2.14.0+cpu  None` | A CPU-only build. It never will, whatever Slurm gives it |
 
     A CPU-only build with a perfectly good GPU allocated is a software problem.
-    No amount of fixing your Slurm script will help.
+    No amount of fixing your Slurm script will help —
+    [B1: Getting your software running on a GPU](software.md) is about
+    fixing it.
 
 ### Both at once
 
+The files for this chapter are in `~/gpu-training/first-job`, and also
+[on GitHub](https://github.com/nesi/reannz-intro-gpu-workshop/tree/main/examples/first-job){: target="_blank" rel="noopener" } to read outside the training environment.
+
+The exercise folder has a script that makes all three checks and prints them
+side by side:
+
 ```bash
-cd ~/gpu-training/07_checking_the_gpu
+cd ~/gpu-training/first-job
 cat check_gpu.py        # worth reading; it is short
 sbatch check-gpu.sl
 ```
+
+You can see `check_gpu.py` [here](https://github.com/nesi/reannz-intro-gpu-workshop/blob/main/examples/first-job/check_gpu.py){: target="_blank" rel="noopener" }. When you run `check-gpu.sl`, it will run
+`check_gpu.py` and produce the following output — here, from a job on Mahuika:
 
 ```
 1. What Slurm gave this job
@@ -94,17 +105,17 @@ sbatch check-gpu.sl
 
 2. What the driver reports (nvidia-smi)
 ---------------------------------------
-  NVIDIA L4, 200 MiB
+  NVIDIA L4, 23034 MiB
 
 3. What your software reports (PyTorch)
 ---------------------------------------
-  torch version:         2.14.0+cu124
+  torch version:         2.14.1+cu124
   built against CUDA:    12.4
   torch.cuda.is_available(): True
   device count:          1
   device name:           NVIDIA L4
   compute capability:    8.9
-  device memory (VRAM):  200 MB
+  device memory (VRAM):  22.5 GB
   test calculation:      1000 (expected 1000)
 
   This job has a GPU and your software is using it.
@@ -126,9 +137,9 @@ that you forget, and find out weeks later.
 |---|---|
 | `CUDA_VISIBLE_DEVICES` empty | Your job's output |
 | `torch.cuda.is_available()` is `False` | Your own check |
-| Your process missing from the GPU's process list | [`nvtop`](06-tools-for-measuring.md) |
+| Your process missing from the GPU's process list | `nvtop` ([Measuring a GPU job](measuring.md)) |
 | GPU at 0% while the CPU is pinned at 100% | `nvtop`, `seff` |
-| `seff` shows **no GPU lines at all** | [Chapter 6](06-tools-for-measuring.md) |
+| `seff` shows **no GPU lines at all** | [Measuring a GPU job](measuring.md) |
 | "falling back to CPU", "no CUDA device found" | Your software's own log — grep for it |
 | The job simply takes far longer than you expected | You, eventually |
 
@@ -150,40 +161,25 @@ The reliable fix is not to check harder. It is to make a job that has no GPU
 **stop**, rather than spend two days quietly on the CPU:
 
 ```bash title="at the top of your job script"
-python3 -c "import torch, sys; sys.exit(0 if torch.cuda.is_available() else 1)" \
-    || { echo "ERROR: no GPU visible - refusing to run on the CPU" >&2; exit 1; }
+[ -n "${CUDA_VISIBLE_DEVICES}" ] \
+    || { echo "ERROR: no GPU allocated" >&2; exit 1; }
 ```
 
-Two lines. A job that was going to waste a day of your allocation now fails in
-four seconds and tells you why.
-
-The same idea without Python, for software that is not PyTorch:
-
-```bash
-[ -n "${CUDA_VISIBLE_DEVICES}" ] || { echo "ERROR: no GPU allocated" >&2; exit 1; }
-```
+One line. A job that was going to waste a day of your allocation now fails in
+seconds and tells you why — whatever software it runs.
 
 !!! note "And record what you saw"
 
-    Even when it works, leave the evidence in the output file:
+    Even when it works, leave the evidence in the output file — which GPU the
+    job was given, and what it was:
 
     ```bash
     echo "CUDA_VISIBLE_DEVICES=${CUDA_VISIBLE_DEVICES}"
-    python3 -c "import torch; print(torch.cuda.get_device_name(0))"
+    nvidia-smi --query-gpu=name,memory.total --format=csv,noheader
     ```
 
     When you come back to a result in six months and wonder whether that run
     used the GPU, this is the difference between knowing and guessing.
-
-!!! warning "In this training environment"
-
-    One check does **not** work here: `tensor.device` reports `cpu`, because
-    the emulator keeps tensors in host memory and does the arithmetic on the
-    CPU. On real hardware it would report `cuda:0`.
-
-    Use `torch.cuda.memory_allocated()` instead — that is accounted correctly
-    — or watch the job with [`nvtop`](06-tools-for-measuring.md), which will
-    show your process holding memory.
 
 !!! dumbbell "Exercise: cause it, then catch it"
 
@@ -193,7 +189,11 @@ The same idea without Python, for software that is not PyTorch:
        ##SBATCH --gpus-per-node l4:1
        ```
     3. Submit it again and compare the two outputs.
-    4. Now add the fail-fast guard above to the script, and submit once more.
+    4. Now add the fail-fast guard above to the script, just before
+       `python3 check_gpu.py`, and submit once more.
+    5. Finally, the same mistake in a script that never checks: run
+       `sbatch forgot-the-gpu.sl`, then `seff` it and your `hello-gpu` job
+       from the last chapter.
 
     ??? "What you should see at step 3"
 
@@ -203,14 +203,17 @@ The same idea without Python, for software that is not PyTorch:
           CUDA_VISIBLE_DEVICES is set but EMPTY.
           This job asked for no GPUs, so it has none. Add to your script:
               #SBATCH --gpus-per-node l4:1
+          CPUs allocated: 2
+          RAM allocated:  2048 MB
 
         2. What the driver reports (nvidia-smi)
         ---------------------------------------
           nvidia-smi found no GPU for this job.
+          No devices were found
 
         3. What your software reports (PyTorch)
         ---------------------------------------
-          torch version:         2.14.0+cu124
+          torch version:         2.14.1+cu124
           built against CUDA:    12.4
           torch.cuda.is_available(): False
 
@@ -229,22 +232,33 @@ The same idea without Python, for software that is not PyTorch:
     ??? "What you should see at step 4"
 
         ```
-        ERROR: no GPU visible - refusing to run on the CPU
+        ERROR: no GPU allocated
         ```
 
-        The job stops in seconds instead of running to completion on the CPU.
-        This is the version you want in your real job scripts.
+        The job stops in seconds, and `sacct` records it as `FAILED`, instead
+        of running to completion on the CPU. This is the version you want in
+        your real job scripts.
+
+    ??? "What you should see at step 5"
+
+        `forgot-the-gpu.sl` prints an empty GPU number, `''`, and `nvidia-smi`
+        finds no devices. Then `seff` tells the two jobs apart: the
+        `hello-gpu` job has two GPU lines at the bottom, and the
+        `forgot-the-gpu` job has none. **No GPU lines means no GPU.**
+        [Measuring a GPU job](measuring.md) covers `seff` properly.
+
+        It ends as `FAILED`, but only because `nvidia-smi` was its last
+        command. Real software would have carried on, finished on the CPU and
+        ended as `COMPLETED`.
 
     **Undo your edit** before moving on.
 
 !!! graduation-cap "Keypoints"
 
     - `CUDA_VISIBLE_DEVICES` empty means Slurm gave you nothing. Fix the script.
-    - **Never judge how busy a GPU is from a single instantaneous reading.**
-      Watch it over time with `nvtop`, or read `seff` afterwards — both are in
-      [chapter 6](06-tools-for-measuring.md).
     - Ask your *software*, not just the driver. A job can have a perfect GPU
       sitting idle beside it.
     - `+cpu` and `version.cuda None` mean a build that can never use a GPU.
     - **Make the job fail** when there is no GPU, rather than letting it run on
       the CPU for two days.
+    - `seff` with **no GPU lines** means the job had no GPU.

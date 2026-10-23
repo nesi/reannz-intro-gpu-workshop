@@ -35,4 +35,4 @@
 # averaging 40% might have held a steady 40% or alternated between 100% and
 # 0%, and only the plot tells you which.
 
-python3 ../07_putting_it_together/sawtooth.py --minutes 3
+python3 ../putting-it-together/sawtooth.py --minutes 3

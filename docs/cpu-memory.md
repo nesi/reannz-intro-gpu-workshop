@@ -1,4 +1,4 @@
-# 4. How much memory should I request?
+# 7. How much CPU memory should I request?
 
 !!! clipboard-list "Lesson Objectives"
 
@@ -11,6 +11,10 @@
     - How much memory should I ask for?
     - My job died without printing an error. What happened?
 
+This chapter is about CPU memory, RAM, which you ask for with `--mem`. GPU
+memory comes with the card ([Which GPU: will it fit?](gpu-memory.md)), and the
+two have nothing to do with each other.
+
 ## What a GPU job needs CPU memory for
 
 It is easy to assume that once the work is on the GPU, the CPU side barely
@@ -18,12 +22,15 @@ matters. It still needs room for:
 
 - **Data read from disk**, before it has been prepared.
 - **Batches waiting to be handed over.** Recall from
-  [chapter 3](03-how-many-cpus.md) that several cores prepare batches at once —
+  [How many CPUs](how-many-cpus.md) that several cores prepare batches at once —
   every batch sitting ready is sitting in CPU memory.
 - **The copy made during a transfer.** Moving data to the GPU does not free the
   CPU memory it came from; for a moment it exists in both places.
 - **Whatever your program keeps CPU-side** — results being accumulated, logs,
   arrays you have not released.
+- **Files in `/tmp` or `$TMPDIR`.** On Mahuika a job's temporary directory
+  sits in RAM, so anything written there counts against `--mem`
+  ([B2: Where the time goes](where-the-time-goes.md)).
 
 ## How much does my job need?
 
@@ -32,7 +39,8 @@ best way is to measure the peak amount of memory you needed
 
 1. **Start with a large amount of RAM.** For example 64 GBs of RAM
 2. **Run a short 15 minute job.**
-3. **Read the peak usage afterwards** (we will see how to do this later). 
+3. **Read the peak usage afterwards**, with `seff`
+   ([Measuring a GPU job](measuring.md)).
 4. **Ask for 20–30% above that peak** from then on.
 
 The margin matters. Peak usage varies a little between runs — a slightly larger
@@ -71,6 +79,7 @@ Sometimes that is all you get. The signs to look for:
 If your request is already large, look instead for something you are holding on
 to CPU-side that you meant to release, or reduce your core count so that fewer
 batches are in flight at once.
+
 !!! graduation-cap "Keypoints"
 
     - A GPU job still needs real **CPU memory**: for data read from disk, for

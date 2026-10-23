@@ -1,15 +1,18 @@
-# 3. How many CPUs do I need?
+# 6. How many CPUs do I need?
 
 !!! clipboard-list "Lesson Objectives"
 
     - Explain why a GPU job needs CPU cores at all
     - Pick a starting number, and know what measuring it will look like
     - Recognise that high CPU efficiency is not the goal
+    - Tell CPU work that feeds the GPU from CPU work that only keeps the cores
+      busy
 
 !!! clipboard-question "Questions"
 
     - I asked for a GPU. Why does the number of CPUs matter?
     - How do I pick a number?
+    - My job does other CPU work in the background. Does that count?
 
 ## Why a GPU job needs CPUs
 
@@ -83,6 +86,46 @@ the other three cores long before the GPU needed them, and were sitting waiting.
     cores is higher, not lower. But it does mean the blue blocks stand for
     *everything the CPU does for the GPU*, not only reading input.
 
+## Work in the background
+
+In the four-core picture, the cores do their work **in the background**: while
+the GPU computes one batch, they are already preparing the next ones. That is
+what keeps it fed, but only if your software prepares batches that way. In
+PyTorch, for example, it is the `num_workers` setting of a `DataLoader`, and
+the default, `num_workers=0`, prepares every batch in your main program, one at
+a time, however many cores you asked for.
+
+Not everything running in the background feeds the GPU, though. The
+post-processing in the note above is one example; a job can be busy with
+plenty of CPU work that the GPU never waits for. Whether it matters to the GPU
+depends on what it is:
+
+| Running in the background | Does the GPU need it? |
+|---|---|
+| Preparing the next batches | **Yes.** This is what feeds it |
+| Part of every step done on the CPU, such as some of the forces in a molecular dynamics code | **Yes.** The GPU waits for it at the end of each step |
+| Writing results, checkpoints and logs | **No**, though it takes cores from the work that does |
+| Another program started in the same job | **No**, unless it makes something the GPU will use |
+
+Here is the four-core job again, with two of its cores taken by a CPU job
+running in the background:
+
+![Four busy CPU cores, two of them on a background job](./fig/cpu-feeds-gpu-background.svg#only-light){: width="700px" .center}
+![Four busy CPU cores, two of them on a background job](./fig/cpu-feeds-gpu-background_dark.svg#only-dark){: width="700px" .center}
+
+All four cores are busy all of the time, so `seff` would report a CPU
+efficiency close to 100%. Yet the GPU is back to waiting, because only two of
+the four cores are making batches. **Busy cores are not the same as a fed
+GPU.**
+
+Background work the GPU does not need still needs cores of its own:
+
+- **If it has to happen in this job** — writing the results, say — ask for its
+  cores on top of the ones feeding the GPU.
+- **If it does not** — an analysis of earlier output, another program started
+  alongside — run it as a separate CPU-only job. The cores on a GPU node are
+  there to feed its GPUs.
+
 ## How many CPUs do I need for my job?
 
 The number of CPU you need depends entirely on how much work your code does per
@@ -117,6 +160,39 @@ nothing except make your job harder to schedule and eat into your fair share.
 **Ask for the smallest core count that gets GPU utilisation onto the flat part
 of the curve** — here, 4.
 
+Background work the GPU does not need shifts the whole curve to the right. If
+a background job took two cores, GPU utilisation would only stop climbing at
+about six, and CPU efficiency would look healthier in every row without the GPU
+being any busier. **The GPU column is the one to trust.**
+
+!!! dumbbell "Optional exercise: measure the curve yourself"
+
+    The training session has four cores, enough for a small version of the
+    table above. The scripts are also [on GitHub](https://github.com/nesi/reannz-intro-gpu-workshop/tree/main/examples/cpus){: target="_blank" rel="noopener" }.
+
+    ```bash
+    cd ~/gpu-training/cpus
+    ./scan-cpus.sh
+    squeue --me                # wait until all three have finished
+    ./compare.sh
+    ```
+
+    The three jobs take about twenty seconds between them.
+
+    ??? "What you should see"
+
+        Something like:
+
+        | Cores | CPU efficiency | GPU utilisation |
+        |---|---|---|
+        | 1 | 97% | 21% |
+        | 2 | 77% | 41% |
+        | 4 | 65% | 42% |
+
+        The same shape as the table above, only sooner: GPU utilisation
+        doubles from one core to two and then stops climbing, while CPU
+        efficiency falls the whole way. For this job, the answer is 2.
+
 !!! graduation-cap "Keypoints"
 
     - A GPU needs CPU cores to feed it. Too few, and it sits idle.
@@ -124,4 +200,7 @@ of the curve** — here, 4.
     - Choose the smallest count where GPU utilisation stops climbing.
     - Falling CPU efficiency is the expected cost of a busier GPU, not a
       problem in itself.
-    - If more cores change nothing, the bottleneck is storage or the software.
+    - Background CPU work only helps if the GPU needs it. **Busy cores are not
+      a fed GPU**: give other work cores of its own, or a job of its own.
+    - If more cores change nothing, the bottleneck is storage or the software —
+      check that it prepares batches in the background.

@@ -1,14 +1,4 @@
-# S1: What a GPU is, and when it helps
-
-!!! circle-info "Optional background"
-
-    Supplementary material. If you already know roughly what a GPU is and that
-    your software has to be written to use one, skip it — the workshop proper
-    starts at [chapter 2](02-which-gpu.md).
-
-    It is here for people meeting GPUs for the first time, and for the one
-    point on it that catches experienced people out: **requesting a GPU does
-    not make an ordinary program use one.**
+# 1. Introduction
 
 !!! clipboard-list "Lesson Objectives"
 
@@ -16,17 +6,22 @@
     - Recognise the kinds of research work that do and do not benefit
     - Understand that "has GPU support" is a property of your software, not of
       your problem
+    - Know that a GPU can only speed up the part of a job that runs on it
 
 !!! clipboard-question "Questions"
 
     - Why is a GPU faster than a CPU for some things and slower for others?
     - How do I find out whether my software can use one?
+    - How much faster can a GPU make my job?
 
 ## The one-sentence version
 
 A CPU has a small number of powerful cores that can each do something
 different. A GPU has thousands of weak cores that all have to do **the same
 thing at the same time, to different data**.
+
+![A CPU's few powerful cores, each busy with a different job, beside a GPU's grid of simple cores all applying one instruction to different data](./fig/cpu-vs-gpu.svg#only-light){: width="700px" .center}
+![A CPU's few powerful cores, each busy with a different job, beside a GPU's grid of simple cores all applying one instruction to different data](./fig/cpu-vs-gpu_dark.svg#only-dark){: width="700px" .center}
 
 That is the whole trade-off. If your work is "apply this identical operation to
 ten million numbers", a GPU will do it in one pass while a CPU grinds through
@@ -66,7 +61,8 @@ better off on the CPU.
 - Anything dominated by reading and writing files
 - Small problems. Moving data to the GPU costs time; if the calculation is
   short, you spend longer on the transfer than you save
-- Code with lots of branching, or where each step depends on the last
+- Code with lots of branching and decisions, or where each step depends on
+  the last
 - Software that has no GPU support — which is most software
 
 !!! warning "The most important point on this page"
@@ -101,6 +97,43 @@ better off on the CPU.
 4. **Ask the support desk.** "Does X benefit from a GPU, and how do I turn it
    on?" is a question they answer often.
 
+Getting a GPU build installed and working on the cluster is its own topic:
+[B1: Getting your software running on a GPU](software.md).
+
+## The ceiling
+
+Even software that uses a GPU well only uses it for part of the job. Suppose
+30% of your job's runtime is GPU work and 70% is reading files, preparing data
+and writing results. You swap the GPU for one twice as fast:
+
+```
+before:  [======== 70% CPU ========][=== 30% GPU ===]     100%
+after:   [======== 70% CPU ========][ 15% ]                85%
+```
+
+You saved 15% of the runtime. Now swap it for one that is *infinitely* fast:
+
+```
+best:    [======== 70% CPU ========]                       70%
+```
+
+You saved 30%, and that is the most any GPU can ever do for this job.
+
+**The work that is not on the GPU sets a hard ceiling on what a better GPU can
+do for you.** The pattern for what belongs on a GPU at all:
+
+| Belongs on the GPU | Stays on the CPU |
+|---|---|
+| The same arithmetic over large arrays | Reading and writing files |
+| Matrix multiplication, convolution, FFT | Decompressing, parsing, text handling |
+| Element-wise operations on big tensors | Decisions and branching |
+| Many independent simulations at once | Anything that must happen in order |
+| Neural network forward and backward passes | Talking to a database or the network |
+
+**Large, regular, identical, independent** work belongs on the GPU. Everything
+else does not. [B2: Where the time goes](where-the-time-goes.md) shows how to
+measure the split for your own job.
+
 !!! dumbbell "Exercise: before you go any further"
 
     Write down, for the software you actually use:
@@ -108,6 +141,8 @@ better off on the CPU.
     1. Its name and version.
     2. Whether its documentation says it supports GPUs.
     3. What you have to change to switch that on.
+    4. Which of its stages would run on the GPU, and roughly what share of
+       the runtime they are.
 
     If the answer to 2 is "no", the rest of this workshop is still worth
     knowing — you will need it the first time a package you use gains GPU
@@ -127,3 +162,5 @@ getting a good one, confirming you got it, and finding out whether it helped.
     - **Software has to be written to use a GPU.** Requesting one does not make
       an ordinary program use it.
     - Check your software's documentation before you request a GPU, not after.
+    - **The work not on the GPU is a ceiling** on what any GPU can do for your
+      job.

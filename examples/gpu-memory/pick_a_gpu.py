@@ -3,10 +3,10 @@
 
 By this point in the workshop you have measured everything this needs:
 
-  1. Does your software need double precision?     (chapter 5)
-  2. How much VRAM does your work need?            (chapter 1)
-  3. How many CPU cores keep the GPU fed?          (chapters 1 and 4)
-  4. What fraction of your runtime is on the GPU?  (chapter 4, and S2)
+  1. Does your software need double precision?     (Which GPU: precision)
+  2. How much VRAM does your work need?            (Which GPU: will it fit?)
+  3. How many CPU cores keep the GPU fed?          (How many CPUs)
+  4. What fraction of your runtime is on the GPU?  (B2: Where the time goes)
 
 This walks through them and prints a Slurm request. It is not an oracle - it
 encodes the same reasoning the earlier chapters explained, so that you have
@@ -47,8 +47,8 @@ needs_fp64 = args.fp64
 if interactive and not args.fp64:
     needs_fp64 = ask(
         "\n1. Does your software need double precision (fp64)?\n"
-        "   Molecular dynamics, quantum chemistry, CFD and linear solvers\n"
-        "   usually do. Machine learning almost never does. (y/n)",
+        "   Quantum chemistry, CFD and linear solvers usually do. Machine\n"
+        "   learning and molecular dynamics usually do not. (y/n)",
         "n",
     ).lower().startswith("y")
 
@@ -58,7 +58,7 @@ if vram is None:
     vram = float(
         ask(
             "\n2. How much VRAM does your work need, in GB?\n"
-            "   Chapter 1 shows how to work this out. If you do not know,\n"
+            "   'Which GPU: will it fit?' shows how. If you do not know,\n"
             "   guess high and measure with seff afterwards.",
             "8",
         )
@@ -70,7 +70,7 @@ if cpus is None:
     cpus = int(
         ask(
             "\n3. How many CPU cores kept the GPU busy?\n"
-            "   Chapter 4 measures this. 2 is a reasonable starting guess.",
+            "   'How many CPUs' measures this. 2 is a reasonable starting guess.",
             "2",
         )
     )
@@ -81,7 +81,8 @@ if share is None:
     share = float(
         ask(
             "\n4. What percentage of your runtime is actually on the GPU?\n"
-            "   seff reports this - chapter 4. 60 is a reasonable guess.",
+            "   seff reports this - see 'Measuring a GPU job'. 60 is a\n"
+            "   reasonable guess.",
             "60",
         )
     )
@@ -97,8 +98,8 @@ candidates = [DEVICES[key] for key in FLEET]
 if needs_fp64:
     candidates = [d for d in candidates if d.fp64_ratio > 0.1]
     print("Double precision required, so the 1:64 cards are out:")
-    print("  the L4 and RTX PRO 6000 would be roughly 30x slower at it than")
-    print("  an A100, which turns an overnight run into most of a week.")
+    print("  at fp64 the L4 is about 20x slower than an A100, and the RTX PRO")
+    print("  6000 about 5x, so an overnight run becomes a week on an L4.")
     print()
 
 fits = [d for d in candidates if d.vram_gb >= vram]
@@ -145,12 +146,15 @@ print("#SBATCH --time          01:00:00")
 print(f"#SBATCH --cpus-per-task {cpus}")
 print("#SBATCH --mem           8GB          # RAM, not VRAM - measure it with seff")
 print(f"#SBATCH --gpus-per-node {choice.gres_name}:1")
+if choice.feature:
+    # Both A100s are "a100" to Slurm; the constraint is what picks the size.
+    print(f"#SBATCH --constraint    {choice.feature}")
 
 print()
 if share < 40:
     print(f"One warning: only {share:.0f}% of your runtime is on the GPU.")
     print("The GPU will sit idle for most of your allocation, and a faster")
-    print("card cannot fix that. Before you queue this, read S2 again")
+    print("card cannot fix that. Before you queue this, read B2 again")
     print("and see whether the CPU side can be sped up or overlapped instead.")
 else:
     print(f"With {share:.0f}% of your runtime on the GPU, this is a reasonable")

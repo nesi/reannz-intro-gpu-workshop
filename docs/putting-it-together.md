@@ -1,4 +1,4 @@
-# 7. Putting it all together
+# 10. Putting it all together
 
 !!! clipboard-list "Lesson Objectives"
 
@@ -17,7 +17,7 @@
 Everything so far has been one piece at a time. This chapter runs the whole
 loop, on one job, from first guess to a script you would keep.
 
-This is the diagram from [chapter 2](02-which-gpu.md) again — it is the plan
+This is the diagram from [Which GPU: will it fit?](gpu-memory.md) again — it is the plan
 for this entire chapter:
 
 ![Choosing a GPU](./fig/choosing-a-gpu.png){: .center}
@@ -38,12 +38,15 @@ Before measuring anything carefully, look at the job with your own eyes. It
 takes two minutes and it catches the failures that would make every later
 measurement meaningless.
 
+The files for this chapter are in `~/gpu-training/putting-it-together`, and also
+[on GitHub](https://github.com/nesi/reannz-intro-gpu-workshop/tree/main/examples/putting-it-together){: target="_blank" rel="noopener" } to read outside the training environment.
+
 !!! dumbbell "Exercise 1: watch a job live"
 
     **Submit the job.**
 
     ```bash
-    cd ~/gpu-training/07_putting_it_together
+    cd ~/gpu-training/putting-it-together
     cat watch-me.sl
     sbatch watch-me.sl
     ```
@@ -69,8 +72,8 @@ measurement meaningless.
         A **sawtooth**. GPU utilisation climbs, drops back, climbs again —
         over and over, never settling high.
 
-        That shape is the [starved GPU from chapter
-        3](03-how-many-cpus.md), seen live. Each rise is the GPU working on a
+        That shape is the [starved GPU](how-many-cpus.md) from
+        How many CPUs, seen live. Each rise is the GPU working on a
         batch; each fall is the GPU waiting while the CPU prepares the next
         one.
 
@@ -101,17 +104,19 @@ on each card in turn, so you do not have to wait for five queues.
     **List the finished jobs.**
 
     ```bash
-    cd ~/gpu-training/07_putting_it_together
+    cd ~/gpu-training/putting-it-together
     cat jobs-by-card.txt
     ```
 
     ```
-    l4         2001001
-    a100_40    2001002
-    a100       2001003
-    h100       2001004
-    pro_6000   2001005
+    l4                  2001001
+    a100 + a100_40gb    2001002
+    a100 + a100_80gb    2001003
+    h100                2001004
+    pro_6000            2001005
     ```
+
+    Both A100s are `a100` to Slurm, and the constraint says which size.
 
     **Run `seff` on each of them** and fill in the table below.
 
@@ -121,11 +126,11 @@ on each card in turn, so you do not have to wait for five queues.
 
     | Card | State | GPU memory used | Fits? |
     |---|---|---|---|
-    | `l4` (24 GB) | | | |
-    | `a100_40` (40 GB) | | | |
-    | `a100` (80 GB) | | | |
-    | `h100` (94 GB) | | | |
-    | `pro_6000` (96 GB) | | | |
+    | L4 (24 GB) | | | |
+    | A100 (40 GB) | | | |
+    | A100 (80 GB) | | | |
+    | H100 (94 GB) | | | |
+    | RTX PRO 6000 (96 GB) | | | |
 
     ??? "What you should find"
 
@@ -134,11 +139,11 @@ on each card in turn, so you do not have to wait for five queues.
 
         | Card | State | GPU memory used | Fits? |
         |---|---|---|---|
-        | `l4` (24 GB) | `FAILED` | — | **No** |
-        | `a100_40` (40 GB) | `COMPLETED` | 30.1 GB of 40 GB — 75% | **Yes** |
-        | `a100` (80 GB) | `COMPLETED` | 30.1 GB of 80 GB — 38% | Yes |
-        | `h100` (94 GB) | `COMPLETED` | 30.1 GB of 94 GB — 32% | Yes |
-        | `pro_6000` (96 GB) | `COMPLETED` | 30.1 GB of 96 GB — 31% | Yes |
+        | L4 (24 GB) | `FAILED` | — | **No** |
+        | A100 (40 GB) | `COMPLETED` | 30.1 GB of 40 GB — 75% | **Yes** |
+        | A100 (80 GB) | `COMPLETED` | 30.1 GB of 80 GB — 38% | Yes |
+        | H100 (94 GB) | `COMPLETED` | 30.1 GB of 94 GB — 32% | Yes |
+        | RTX PRO 6000 (96 GB) | `COMPLETED` | 30.1 GB of 96 GB — 31% | Yes |
 
         The job needs about **30 GB**, so the L4's 24 GB was never going to be
         enough — and its output file will say so:
@@ -148,7 +153,8 @@ on each card in turn, so you do not have to wait for five queues.
         total capacity; 23890 MiB already allocated; 118 MiB free).
         ```
 
-        **The answer is `a100_40`.** It is the smallest card the job fits in,
+        **The answer is the 40 GB A100**: `--gpus-per-node a100:1` with
+        `--constraint a100_40gb`. It is the smallest card the job fits in,
         so it is the one you will wait least for. Every card above it runs the
         job at the same speed while holding memory somebody else needed.
 
@@ -171,7 +177,7 @@ need, but do change how well it is used.
 
 !!! dumbbell "Exercise 3a: settle the core count"
 
-    The same job, on `a100_40`, submitted at five core counts:
+    The same job, on the 40 GB A100, submitted at five core counts:
 
     ```bash
     cat jobs-by-cores.txt
@@ -198,7 +204,7 @@ need, but do change how well it is used.
         | 8 | 38% | 36% |
         | 16 | 20% | 36% |
 
-        The same curve as [chapter 3](03-how-many-cpus.md): GPU utilisation
+        The same curve as [How many CPUs](how-many-cpus.md): GPU utilisation
         climbs steeply, then flattens at 4. Going from 4 cores to 16 buys one
         percentage point of GPU for four times the CPU request.
 
@@ -219,7 +225,7 @@ need, but do change how well it is used.
 
     A **steady** 35% and a job **alternating** between 100% and 0% both average
     35%, and they have completely different causes. Only the plot distinguishes
-    them — see [chapter 6](06-tools-for-measuring.md).
+    them — see [Measuring a GPU job](measuring.md).
 
 ### Memory
 
@@ -245,31 +251,45 @@ need, but do change how well it is used.
         6.2 GB plus 30% is about 8 GB. **Ask for `--mem 8GB`.**
 
         Be careful not to size this from the one-core run. Memory scales with
-        the core count ([chapter 4](04-how-much-memory.md)) — measure it at
+        the core count ([How much CPU memory](cpu-memory.md)) — measure it at
         the core count you have actually chosen.
 
 ---
 
 ## Writing the answers back
 
-Three passes, three answers. Put them in a script you would keep:
+Three passes, three answers, and one more to work out: how long to ask for.
+
+### How long to ask for
+
+The flow diagram had you record a step count in the 15-minute test, and this
+is what it is for. If the test got through 1,250 steps in 15 minutes and the
+real run needs 30,000, the run will take about 24 times as long: six hours.
+Add 20–30% for the variation a single test will not show you, and ask for
+eight.
+
+Put it all in a script you would keep:
 
 ```bash
 #!/bin/bash -e
 #SBATCH --job-name      my-real-job
 #SBATCH --account       nesi99991
-#SBATCH --time          08:00:00
-#SBATCH --gpus-per-node a100_40:1     # (1)
-#SBATCH --cpus-per-task 4             # (2)
-#SBATCH --mem           8GB           # (3)
+#SBATCH --time          08:00:00      # (1)
+#SBATCH --gpus-per-node a100:1        # (2)
+#SBATCH --constraint    a100_40gb
+#SBATCH --cpus-per-task 4             # (3)
+#SBATCH --mem           8GB           # (4)
 #SBATCH --output        my-job-%j.out
 
 # your program here
 ```
 
-1. **Pass 2.** The smallest card the job fits in.
-2. **Pass 3a.** Where GPU utilisation stopped climbing.
-3. **Pass 3b.** Measured peak, plus headroom.
+1. **The step count.** The test's rate, times the steps you need, plus a
+   margin. Past a day, read [B3: Long jobs](long-jobs.md) and checkpoint.
+2. **Pass 2.** The smallest card the job fits in: the 40 GB A100, which
+   takes a constraint ([Which GPU: precision](precision.md)).
+3. **Pass 3a.** Where GPU utilisation stopped climbing.
+4. **Pass 3b.** Measured peak, plus headroom.
 
 !!! warning "Take the testing lines out"
 
@@ -280,8 +300,8 @@ Three passes, three answers. Put them in a script you would keep:
     debug walltime limit. Leaving the profiling on writes a sample every second
     for the entire run.
 
-    And put `--time` back to something realistic — the 15 minutes was for
-    testing.
+    And `--time` comes from the step count, not from the 15 minutes the test
+    needed.
 
 !!! graduation-cap "Keypoints"
 
@@ -294,4 +314,5 @@ Three passes, three answers. Put them in a script you would keep:
     - Choose the core count where **GPU utilisation stops climbing**, not where
       CPU efficiency looks best.
     - Size memory from a run at the core count you have actually settled on.
+    - Set `--time` from the test's **step count**, plus 20–30%.
     - **Strip the testing flags** before the script becomes a real job.
